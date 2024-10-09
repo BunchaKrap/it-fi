@@ -10,7 +10,7 @@ import os
 
 load_dotenv()
 
-uri = os.getenv("MONGO_URI")
+uri = "mongodb+srv://vukijee:Y6HSTeyKvjeO77oh@it-fi.jsi9p.mongodb.net/?retryWrites=true&w=majority&appName=IT-fi"
 
 app = Flask(__name__)
 curr_yr = datetime.now().year
