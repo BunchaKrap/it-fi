@@ -1,0 +1,149 @@
+{% extends 'boilerplate.html' %} {% block content %}
+<div class="container-md w-60 py-5 m-3">
+  <h2 class="text-center">Mitä haluat lahjoittaa?</h2>
+  <p class="text-center">Tämä ei sido sinua mihinkään..</p>
+  <div class="form-complete row justify-content-center">
+    <form action="" class="col-md-6">
+      <div class="mb-4 mt-5">
+        <div class="form-labels-dona">Tuotteen tiedot</div>
+      </div>
+
+      <!-- Product Section -->
+      <div class="product-form">
+        <div class="form-group mb-3 text-start">
+          <label for="product">Tuote</label>
+          <input type="text" id="product" class="form-control mt-2" />
+        </div>
+
+        <div class="form-group mb-3 text-start">
+          <label for="category">Tuotekategoria</label>
+          <select id="category" class="form-select mt-2">
+            <option value="" selected disabled></option>
+            <option value="chairs">Tuolit & Nojatuolit</option>
+            <option value="couches">Sohvat</option>
+            <option value="beds">Sängyt</option>
+            <option value="tables">Pöydät</option>
+            <option value="shelves">Hyllyt, tasot ja säilytys</option>
+            <option value="lamps">Valaisimet</option>
+            <option value="rugs">Matot</option>
+            <option value="furnishing">Sisustusesineet</option>
+            <option value="outdoors">Ulkokalusteet</option>
+          </select>
+        </div>
+
+        <div class="form-group mb-3 text-start">
+          <label for="image">Kuva tuotteesta</label>
+          <input type="file" id="image" class="form-control mt-2" />
+        </div>
+
+        <div class="form-group mb-3 text-start">
+          <label for="condition">Tuotteen kunto</label>
+          <select type="" id="condition" class="form-select mt-2">
+            <option value="" selected disabled></option>
+            <option value="new_unused">Uusi / Käyttämätön</option>
+            <option value="great">Erinomainen</option>
+            <option value="good">Hyvä</option>
+            <option value="decent">Kohtalainen</option>
+            <option value="worn_out">Kulunut</option>
+          </select>
+        </div>
+
+        <div class="form-group mb-3 text-start">
+          <label for="age">Tuotteen ikä</label>
+          <input type="text" id="age" class="form-control mt-2" />
+        </div>
+      </div>
+      <div class="form-group mb-4">
+        <div class="text-start">
+          <div class="form-check w-100">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="animals_yes"
+              value="animals_yes"
+            />
+            <label class="form-check-label" for="animals_yes"
+              >Eläintalous</label
+            >
+          </div>
+        </div>
+      </div>
+      <!-- User Information Section -->
+      <div class="mb-4 mt-5">
+        <div class="form-labels-dona">Yhteystietosi</div>
+      </div>
+
+      <div class="user-form">
+        <div class="form-group mb-3 text-start">
+          <label for="email">Sähköposti</label>
+          <input
+            type="email"
+            name="email"
+            id="email"
+            class="form-control mt-2"
+          />
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3 text-start">
+            <label for="first-name">Etunimi</label>
+            <input type="text" id="first-name" class="form-control mt-2" />
+          </div>
+
+          <div class="col-md-6 mb-3 text-start">
+            <label for="surname">Sukunimi</label>
+            <input type="text" id="surname" class="form-control mt-2" />
+          </div>
+        </div>
+
+        <div class="form-group mb-3 text-start">
+          <label for="address">Katuosoite</label>
+          <input type="text" id="address" class="form-control mt-2" />
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3 text-start">
+            <label for="postal-code">Postinumero</label>
+            <input
+              type="text"
+              id="postal-code"
+              class="form-control mt-2"
+              maxlength="5"
+            />
+          </div>
+
+          <div class="col-md-6 mb-3 text-start">
+            <label for="city">Kaupunki</label>
+            <input type="text" id="city" class="form-control mt-2" />
+          </div>
+        </div>
+      </div>
+      <div class="form-group mb-4">
+        <div class="text-start">
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="newsletter"
+              value="newsletter"
+            />
+            <label class="form-check-label" for="newsletter"
+              >Lähetä uusimmat ilmoitukset sähköpostiini</label
+            >
+          </div>
+        </div>
+      </div>
+      <div class="form-group text-center mt-5">
+        <p class="accept-cookies-font">
+          Lähettämällä ilmoituksen hyväksyn ilmaistatavaraa.fi:n
+          <span class="ppolicy_text"
+            ><a href="{{url_for('rules')}}">käyttöehdot</a></span
+          >.
+        </p>
+      </div>
+      <button class="btn form-submit-btn" type="button">Lähetä</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'boilerplate.html' %} {% block content %}
+<div class="container row justify-content-center flashy-ashy container-fluid">
+  <h1 class="w-50">Haluatko tuotteellesi uuden ja tehokkaan myyntikanavan?</h1>
+  <div class="row justify-content-evenly priv-text-content">
+    <div class="col-md-6 p-3 mx-auto">
+      <img
+        src="{{url_for('static', filename='pics/marketingphoto.jpg')}}"
+        alt="affiliates_kuva"
+        width="630"
+        height="400"
+      />
+      <h2 class="mb-3 mt-3">Mainostajille</h2>
+      <p class="text-start">
+        Kuluttajat ovat jo tullessaan sivustoillemme kiinnostuneita sivuston
+        sisällöstä, ja mikä parhainta, todennäköisesti ostoaikeissa.
+      </p>
+      <p class="text-start">
+        Perheystävälliset markkinapaikkamme sopivat kaikenikäisille
+        selailijoille. Noudatamme Suomen lakia, valitsemme mainostajat tarkasti
+        eikä brändisi näy negatiivisten uutisten yhteydessä.
+      </p>
+      <p class="text-start">
+        Haluamme olla kumppani, johon voi nojata liiketoiminnan kasvua
+        haettaessa niin hyvinä kuin haasteellisina aikoina – aina vastuullisuus
+        edellä.
+      </p>
+    </div>
+  </div>
+</div>
+{%endblock%}

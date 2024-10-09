@@ -1,0 +1,32 @@
+<div
+  class="container-md p-3 m-1 align-items-center text-center ad-boxs-skyscraper-left abslr"
+>
+  <div class="row align-items-center text-start">
+    <h2 class="mt-3 mb-3">Sijainti</h2>
+    <ul id="location-list" class="text-start mt-4">
+      <li class="mb-5">
+        <a href="#" class="location-filter" data-location="All"
+          >Kaikki alueet</a
+        >
+      </li>
+      {% for location in unique_locations %}
+      <li class="mb-1">
+        <a
+          href="#"
+          class="location-filter"
+          data-location="{{ location.split(', ')[0] }}"
+          >{{ location }}</a
+        >
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<!-- <div
+  class="container-md align-items-center text-center ad-boxs-skyscraper-righ abslr"
+>
+  <div class="row align-items-center">
+    <div class="col justify-content-center m-1"></div>
+  </div>
+</div> -->

@@ -1,0 +1,45 @@
+{% extends 'boilerplate.html' %} {% block content %}
+<div class="container-md">
+  <h1 class="mt-3 mb-3">Kategoriat</h1>
+  <div class="row justify-content-center">
+    {% set ns = namespace(displayed_categories=[]) %} {% for details in
+    tiedostot %} {# Iterate over the list of items #} {% set extra_data =
+    details.get('extra_data', None) %} {% set item_category =
+    extra_data.get('item_category', None) if extra_data else None %} {% if
+    item_category and item_category not in ns.displayed_categories %}
+    <div class="col-md-3 border border-outline-success m-2 p-2">
+      {% set category_id = cat_ids.get(item_category) %}
+      <a
+        href="{{ url_for('categories', id=category_id) }}"
+        class="category_page_tit"
+      >
+        {# Icon selection based on item_category #} {% if item_category ==
+        "Elektroniikka ja kodinkoneet" %}
+        <i class="fa-solid fa-laptop"></i>
+        {% elif item_category == "Viihde ja harrastukset" %}
+        <i class="fa-solid fa-tshirt"></i>
+        {% elif item_category == "Urheilu ja ulkoilu" %}
+        <i class="fa-solid fa-basketball-ball"></i>
+        {% elif item_category == "Huonekalut ja sisustus" %}
+        <i class="fa-solid fa-couch"></i>
+        {% elif item_category == "Lapset ja vanhemmat" %}
+        <i class="fa-solid fa-child-reaching"></i>
+        {% elif item_category == "Antiikki ja taide" %}
+        <i class="fa-solid fa-paintbrush"></i>
+        {% elif item_category == "Eläimet ja eläintarvikkeet" %}
+        <i class="fa-solid fa-paw"></i>
+        {% elif item_category == "Liiketoiminta ja palvelut" %}
+        <i class="fa-solid fa-briefcase"></i>
+        {% elif item_category == "Koti, puutarha ja rakentaminen" %}
+        <i class="fa-solid fa-house-chimney"></i>
+        {% else %}
+        <i class="fa-solid fa-box"></i>
+        {% endif %}
+        <h2>{{ item_category }}</h2>
+      </a>
+    </div>
+    {% set ns.displayed_categories = ns.displayed_categories + [item_category]
+    %} {% endif %} {% endfor %}
+  </div>
+</div>
+{% endblock %}

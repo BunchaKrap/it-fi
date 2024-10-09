@@ -1,0 +1,37 @@
+<div class="container-fluid block_footer">
+  <div class="row justify-content-evenly sec_foot_stuff">
+    <div class="col-md-2 p-3 text-center">
+      <div class="col">
+        <a href="{{url_for('kotisivut')}}"
+          ><img
+            id="footer-logo"
+            src="{{url_for('static', filename='/pics/logo_reg.png')}}"
+            width="120"
+            height="30"
+            alt="logo_reg"
+        /></a>
+      </div>
+    </div>
+    <div class="col-md-2 p-3 text-start">
+      <div>Kaikille</div>
+      <div class="col"><a href="{{url_for('donaa')}}">Lahjoita</a></div>
+
+      <div class="col">
+        <a href="https://www.tori.fi/">Yhteistyökumppanimme</a>
+      </div>
+      <div class="col"><a href="{{url_for('about')}}">Meistä</a></div>
+      <div class="col">
+        <a href="{{url_for('affiliates')}}">Mainostajille</a>
+      </div>
+    </div>
+    <div class="col-md-2 p-3 text-start">
+      <div>Tietoja</div>
+      <div class="col"><a href="{{url_for('tietosuoja')}}">Tietosuoja</a></div>
+      <div class="col"><a href="{{url_for('cookies')}}">Evästeet</a></div>
+      <div class="col">
+        <a href="{{url_for('rules')}}">Säännöt & Käyttöehdot</a>
+      </div>
+      <div class="col"><a href="{{url_for('contact')}}">Ota Yhteyttä</a></div>
+    </div>
+  </div>
+</div>

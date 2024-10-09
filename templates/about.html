@@ -1,0 +1,22 @@
+{% extends 'boilerplate.html' %} {% block content %}
+
+<div class="container-md col-md-6 text-start mt-5">
+  <div class="justify-content-center priv-text-content text-center">
+    <h1 class="mt-5 mb-5">Meistä</h1>
+
+    <p>
+      Me Ilmaistatavaraa.fi:llä pyrimme antamaan kaikille mahdollisuuden
+      ilmaiseen tavaraan! Emme vastaa kaupankäynnistä. Olemme vain välikäsi
+      Käyttäjän sekä Palvelun välillä! 😊
+    </p>
+    <img
+      src="{{ url_for('static', filename='pics/kukkuluuruu.jpg') }}"
+      alt="happy_people"
+      width="630"
+      height="400"
+    />
+    <p class="mt-4 mb-0">Kiitos käynnistä ja tervetuloa uudelleen!</p>
+  </div>
+</div>
+
+{%endblock%}

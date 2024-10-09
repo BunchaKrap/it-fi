@@ -1,0 +1,73 @@
+<nav class="navbar navbar-expand-lg new-navver">
+  <div class="container-fluid justify-content-center">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div
+      class="collapse navbar-collapse justify-content-center"
+      id="navbarSupportedContent"
+    >
+      <ul class="navbar-nav mb-2 mb-lg-1 text-center">
+        <li class="nav-item mx-3">
+          <a
+            class="nav-link"
+            aria-current="page"
+            href="{{url_for('kotisivut')}}"
+            >Etusivu</a
+          >
+        </li>
+        <li class="nav-item dropdown mx-3">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Kategoriat
+          </a>
+          <ul class="dropdown-menu text-start mx-3">
+            {% set ns = namespace(displayed_categories=[]) %} {% for item in
+            all_items %} {% set extra_data = item.get('extra_data', None) %} {%
+            if extra_data is not none %} {% set category =
+            extra_data.get('item_category', None) %} {% if category and category
+            not in ns.displayed_categories %} {% set ns.displayed_categories =
+            ns.displayed_categories + [category] %} {% set category_id =
+            cat_ids.get(category) %}
+            <li>
+              <a
+                class="dropdown-item"
+                href="{{ url_for('categories', id=category_id) }}"
+              >
+                {{ category }}
+              </a>
+            </li>
+            {% endif %} {% endif %} {% endfor %}
+          </ul>
+        </li>
+        <li class="nav-item nav-item-standout mx-3">
+          <a class="nav-link" href="{{url_for('donaa')}}">Lahjoita!</a>
+        </li>
+      </ul>
+      <!-- <form class="d-flex" role="search">
+        <input
+          class="form-control me-2"
+          type="search"
+          placeholder="Search"
+          aria-label="Search"
+        />
+        <button class="btn" type="submit">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </form> -->
+    </div>
+  </div>
+</nav>

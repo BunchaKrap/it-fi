@@ -1,0 +1,62 @@
+{% extends 'boilerplate.html' %} {% block content %}
+<h2 class="mb-4 mt-2">Kaikki tuotteet</h2>
+{% set ad_index = [2, 3]|random %} {% set ads = [ {'img': 'ads/ad_image1.jpg',
+'link': '#', 'text': 'Ad 1: Check out this product!'}, {'img':
+'ads/ad_image2.jpg', 'link': '#', 'text': 'Ad 2: Amazing offers here!'}, {'img':
+'ads/ad_image3.jpg', 'link': '#', 'text': 'Ad 3: Discover more here!'} ] %} {%
+set random_ad = ads|random %}{% for item in tiedostot %}
+<div
+  class="col-md-3 col-sm-2 mb-3 item-card"
+  data-location="{{ item.location.split(', ')[0] | default('Unknown') }}"
+>
+  <div class="post_item">
+    <div class="col">
+      <a href="{{ item.item_link | default('#') }}">
+        <img
+          src="{{ item.img | default('default.jpg') }}"
+          alt="{{ item.title | default('No title') }}"
+          width="200"
+          height="200"
+          class="img-fluid"
+        />
+      </a>
+    </div>
+    <div class="col post_img_deets">
+      <h2 class="post_item_title">{{ item.title | default('No title') }}</h2>
+      <p class="post_loc">
+        <strong>Sijainti:</strong> {{ item.location | default('Location
+        unknown') }}
+      </p>
+      <p class="post_time">
+        <strong>Julkaistu:</strong> {{ item.time | default('N/A') }}
+      </p>
+    </div>
+  </div>
+</div>
+
+{% if loop.index == ad_index %}
+<div class="col-md-3 col-sm-6 mb-3">
+  <div class="post_item ad_block p-3">
+    <h2>NEW PAINTINGS!</h2>
+    <div class="col">
+      <a href="{{ random_ad.link }}">
+        <img
+          src="{{ url_for('static', filename='pics/sidead2.jpg') }}"
+          alt="Ad Image"
+          width="200"
+          height="200"
+          class="img-fluid"
+        />
+      </a>
+    </div>
+    <p>{{ random_ad.text }}</p>
+  </div>
+</div>
+{% endif %} {% endfor %} {% endblock %}
+
+<!-- <a href="{{ item.img }}">
+        <img
+          src="{{ url_for('static', filename='pics/magnifying-glass-icon.png') }}"
+          alt="magnif"
+          class="magnif_img"
+      /></a> -->

@@ -1,0 +1,49 @@
+{% extends 'boilerplate.html' %} {% block content %}
+
+<div class="container-md">
+  <h1 class="mb-5">{{ category }}</h1>
+  <div class="row">
+    {% set total_items = tiedostot | length %}
+    <p class="mb-5 ilmoitustenmaara">{{ total_items }} ilmoitusta</p>
+
+    {% for item in tiedostot %} {% set extra_data = item.get('extra_data', None)
+    %} {% set item_category = extra_data.get('item_category') if extra_data else
+    None %} {% if item_category and item_category.lower() == category.lower() %}
+    <div
+      class="col-md-3 col-sm-6 mb-3 item-card"
+      data-location="{{ item.get('location', 'Unknown').split(', ')[0] }}"
+    >
+      <div class="post_item post_item_cat">
+        <div class="col">
+          <a href="{{ item.get('item_link', '#') }}">
+            <img
+              src="{{ item.get('img', url_for('static', filename='pics/noimage.jpg')) }}"
+              alt="{{ item.get('title', 'No Title') }}"
+              width="200"
+              height="200"
+              class="img-fluid"
+            />
+          </a>
+        </div>
+
+        <div class="col post_img_deets">
+          <h2 class="post_item_title">{{ item.get('title', 'No Title') }}</h2>
+          <p class="post_loc">
+            <strong>Sijainti:</strong> {{ item.get('location', 'Unknown') }}
+          </p>
+          <p class="post_time">
+            <strong>Julkaistu:</strong> {{ item.get('time', 'Unknown') }}
+          </p>
+          <p>
+            <strong>Kuvaus:</strong> {{ extra_data.get('item_description', 'No
+            description available') if extra_data else 'No description
+            available' }}
+          </p>
+        </div>
+      </div>
+    </div>
+    {% endif %} {% endfor %}
+  </div>
+</div>
+
+{% endblock %}
