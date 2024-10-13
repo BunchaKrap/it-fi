@@ -11,7 +11,7 @@ set random_ad = ads|random %}{% for item in tiedostot %}
 >
   <div class="post_item">
     <div class="col">
-      <a href="{{ item.item_link | default('#') }}">
+      <a href="{{ item.item_link | default('#') }}" target="_blank">
         <img
           src="{{ item.img | default('default.jpg') }}"
           alt="{{ item.title | default('No title') }}"

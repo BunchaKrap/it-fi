@@ -15,7 +15,7 @@
     >
       <div class="post_item post_item_cat">
         <div class="col">
-          <a href="{{ item.get('item_link', '#') }}">
+          <a href="{{ item.get('item_link', '#') }}" target="_blank">
             <img
               src="{{ item.get('img', url_for('static', filename='pics/noimage.jpg')) }}"
               alt="{{ item.get('title', 'No Title') }}"
