@@ -50,8 +50,7 @@
     </nav>
 
     {%include "nav_second.html"%} {% if show_ad is not defined or show_ad ==
-    True %} {%include "ad-top.html"%} {% include "ad-skyscraper.html" %} {%
-    endif %}
+    True %} {%include "ad-top.html"%} {% endif %}
     <main>
       <div class="container-md my-3 p-3 the-main-block">
         <div class="row text-center">{% block content %} {% endblock %}</div>
@@ -74,11 +73,10 @@
         event.preventDefault();
 
         const selectedLocation = this.getAttribute('data-location');
-        console.log('Selected location:', selectedLocation);
+        <!-- console.log('Selected location:', selectedLocation); -->
 
         items.forEach((item) => {
           const itemLocation = item.getAttribute('data-location');
-          console.log('Item location:', itemLocation);
 
           if (itemLocation === selectedLocation || selectedLocation === 'All') {
             item.style.display = 'block';
@@ -86,9 +84,6 @@
             item.style.display = 'none';
           }
         });
-
-        locationLinks.forEach((link) => link.classList.remove('active'));
-        this.classList.add('active');
       });
     });
   });

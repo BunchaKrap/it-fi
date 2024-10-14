@@ -1,10 +1,11 @@
-{% extends 'boilerplate.html' %} {% block content %}
-<h2 class="mb-4 mt-2">Kaikki tuotteet</h2>
-{% set ad_index = [2, 3]|random %} {% set ads = [ {'img': 'ads/ad_image1.jpg',
-'link': '#', 'text': 'Ad 1: Check out this product!'}, {'img':
-'ads/ad_image2.jpg', 'link': '#', 'text': 'Ad 2: Amazing offers here!'}, {'img':
-'ads/ad_image3.jpg', 'link': '#', 'text': 'Ad 3: Discover more here!'} ] %} {%
-set random_ad = ads|random %}{% for item in tiedostot %}
+{% extends 'boilerplate.html' %} {% block content %}{%include "cat_new.html"%}
+<h2 class="mb-4">Uusimmat tuotteet</h2>
+{% include "ad-skyscraper.html" %} {% set ad_index = [2, 3]|random %} {% set ads
+= [ {'img': 'ads/ad_image1.jpg', 'link': '#', 'text': 'Ad 1: Check out this
+product!'}, {'img': 'ads/ad_image2.jpg', 'link': '#', 'text': 'Ad 2: Amazing
+offers here!'}, {'img': 'ads/ad_image3.jpg', 'link': '#', 'text': 'Ad 3:
+Discover more here!'} ] %} {% set random_ad = ads|random %}{% for item in
+tiedostot %}
 <div
   class="col-md-3 col-sm-2 mb-3 item-card"
   data-location="{{ item.location.split(', ')[0] | default('Unknown') }}"

@@ -243,5 +243,5 @@ def affiliates():
     )
 
 
-# if __name__ == "__main__":  # for dev
-#     app.run(debug=True)
+if __name__ == "__main__":  # for dev
+    app.run(debug=True)

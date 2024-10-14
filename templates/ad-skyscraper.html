@@ -1,4 +1,36 @@
-<div
+<div class="mb-4 dropdown-center filter-dropdown">
+  <button
+    class="btn"
+    type="button"
+    id="triggerId"
+    data-bs-toggle="dropdown"
+    aria-haspopup="true"
+    aria-expanded="false"
+  >
+    Sijainti
+  </button>
+  <div class="dropdown-menu ddown-height" aria-labelledby="triggerId">
+    <ul id="location-list">
+      <li class="mb-3">
+        <a href="#" class="location-filter dropdown-item" data-location="All"
+          >Kaikki alueet</a
+        >
+      </li>
+      {% for location in unique_locations %}
+      <li class="mb-1">
+        <a
+          href="#"
+          class="location-filter dropdown-item"
+          data-location="{{ location.split(', ')[0] }}"
+          >{{ location }}</a
+        >
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<!-- <div
   class="container-md p-3 m-1 align-items-center text-center ad-boxs-skyscraper-left abslr"
 >
   <div class="row align-items-center text-start">
@@ -21,7 +53,7 @@
       {% endfor %}
     </ul>
   </div>
-</div>
+</div> -->
 
 <!-- <div
   class="container-md align-items-center text-center ad-boxs-skyscraper-righ abslr"
