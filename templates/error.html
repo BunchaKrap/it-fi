@@ -1,6 +1,12 @@
 {% extends 'boilerplate.html' %} {% block content %}
-<div>
+<div class="container-md">
   <h1>Huppista-keikkaa! Oletkohan nyt ihan oikealla sivulla?</h1>
+  <div class="error_img mt-5">
+    <img
+      src="{{url_for('static', filename='pics/rob_error.svg')}}"
+      alt="error_image"
+    />
+  </div>
 </div>
 
 {%endblock%}

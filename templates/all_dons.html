@@ -1,0 +1,104 @@
+{% extends 'boilerplate.html' %} {% block content %}
+
+<div class="container-md">
+  <div class="priv-text-content row">
+    <!-- Display the latest donation -->
+    {% if last_don %}
+    <div class="vika_dono col mb-4">
+      <h4>Viimeisin lahjoitus:</h4>
+      <p>Tuote: {{ last_don.product }}</p>
+      <p>Kategoria: {{ last_don.category }}</p>
+      <p>Kunto: {{ last_don.condition }}</p>
+      <p>Ikä: {{ last_don.age }}</p>
+      <p>Eläintalous: {{ 'Kyllä' if last_don.animals_yes else 'Ei' }}</p>
+      <p>Sähköposti: {{ last_don.email }}</p>
+      <p>Etunimi: {{ last_don.first_name }}</p>
+      <p>Sukunimi: {{ last_don.surname }}</p>
+      <p>Osoite: {{ last_don.address }}</p>
+      <p>Postinumero: {{ last_don.postal_code }}</p>
+      <p>Kaupunki: {{ last_don.city }}</p>
+      <p>Uutiskirje: {{ 'Kyllä' if last_don.newsletter else 'Ei' }}</p>
+      <p>
+        Kuva:
+        <img
+          src="{{ last_don.image_url }}"
+          alt="Image of {{ last_don.product }}"
+          width="100"
+        />
+      </p>
+      <p>
+        Ilmoitus jätetty: {{ last_don.submitted_time if last_don.submitted_time
+        else 'Ei aikaa' }}
+      </p>
+      <div class="submits">
+        <form
+          action="{{ url_for('accept_donation', donation_id=last_don._id) }}"
+          method="POST"
+        >
+          <button type="submit" class="btn btn-success">Hyväksy</button>
+        </form>
+        <form
+          action="{{ url_for('delete_donation', donation_id=last_don._id) }}"
+          method="POST"
+          style="display: inline"
+        >
+          <button type="submit" class="btn btn-danger">Poista ilmoitus</button>
+        </form>
+      </div>
+    </div>
+    <hr />
+    {% else %}
+    <p>No last donation available.</p>
+    {% endif %}
+
+    <!-- Display all donations -->
+    {% if don_items and don_items|length > 0 %} {% for item in don_items %}
+    <div class="don_item_items col mb-4">
+      <p>Tuote: {{ item.product }}</p>
+      <p>Kategoria: {{ item.category }}</p>
+      <p>Kunto: {{ item.condition }}</p>
+      <p>Ikä: {{ item.age }}</p>
+      <p>Eläintalous: {{ 'Kyllä' if item.animals_yes else 'Ei' }}</p>
+      <p>Sähköposti: {{ item.email }}</p>
+      <p>Etunimi: {{ item.first_name }}</p>
+      <p>Sukunimi: {{ item.surname }}</p>
+      <p>Osoite: {{ item.address }}</p>
+      <p>Postinumero: {{ item.postal_code }}</p>
+      <p>Kaupunki: {{ item.city }}</p>
+      <p>Uutiskirje: {{ 'Kyllä' if item.newsletter else 'Ei' }}</p>
+      <p>
+        Ilmoitus jätetty: {{ item.submitted_time if item.submitted_time else 'Ei
+        aikaa' }}
+      </p>
+      <p>
+        Kuva:
+        <img
+          src="{{ item.image_url }}"
+          alt="Image of {{ item.product }}"
+          width="100"
+        />
+      </p>
+      <div class="submits">
+        <form
+          action="{{ url_for('accept_donation', donation_id=item._id) }}"
+          method="POST"
+        >
+          <button type="submit" class="btn btn-success">Hyväksy</button>
+        </form>
+
+        <form
+          action="{{ url_for('delete_donation', donation_id=item._id) }}"
+          method="POST"
+          style="display: inline"
+        >
+          <button type="submit" class="btn btn-danger">Poista ilmoitus</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %} {% else %}
+    <p>No donations available.</p>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

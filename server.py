@@ -1,10 +1,15 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for, flash
 from datetime import datetime
 from pymongo import MongoClient
 from pymongo.mongo_client import MongoClient  # noqa: F811
 from pymongo.server_api import ServerApi
 from dotenv import load_dotenv
-# import os
+import cloudinary
+import cloudinary.uploader
+from cloudinary.utils import cloudinary_url
+import os
+from werkzeug.utils import secure_filename
+from bson import ObjectId
 
 # import requests
 
@@ -15,12 +20,35 @@ uri = "mongodb+srv://vukijee:Y6HSTeyKvjeO77oh@it-fi.jsi9p.mongodb.net/?retryWrit
 app = Flask(__name__)
 curr_yr = datetime.now().year
 client = MongoClient(uri, server_api=ServerApi("1"))
+new_db = client["donations"]
+don_coll = new_db["donations"]
+app.secret_key = "madre_mia"
 
 try:
     client.admin.command("ping")
     print("Pinged your deployment. You successfully connected to MongoDB!")
 except Exception as e:
     print(e)
+
+
+cloudinary.config(
+    cloud_name="doi7brn37",
+    api_key="397221829232896",
+    api_secret="uvdoBL5SzfsLgdCInDA4jMl0El4",
+    secure=True,
+)
+
+
+def open_don_data():
+    try:
+        lahjotukset = list(don_coll.find({}))
+
+        for item in lahjotukset:
+            item["_id"] = str(item["_id"])
+        return don_coll, lahjotukset
+
+    except Exception as e:
+        print(f"Error: {e}")
 
 
 def open_data(collection_name):
@@ -84,10 +112,20 @@ def find_item_loc(category_name=None):
 # print(open_data("MainColl"))
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("error.html", cat_ids=category_ids), 404
+
+
 @app.context_processor
 def inject_all_items():
     tiedostot = open_data("MainColl")
     return dict(all_items=tiedostot)
+
+
+@app.context_processor
+def inject_curr_yr():
+    return {"curr_yr": curr_yr}
 
 
 @app.route("/")
@@ -175,12 +213,160 @@ def donaa():
     tiedostot = open_data("MainColl")
     return render_template(
         "donaaaa.html",
+        cats=category_ids,
         curr_yr=curr_yr,
         show_ad=False,
         tiedostot=tiedostot,
         page_title="Lahjoita",
         cat_ids=category_ids,
     )
+
+
+@app.route("/submit_donation", methods=["POST"])
+def submit_donation():
+    try:
+        category_id = request.form.get("category")
+
+        category_name = None
+        for name, cat_id in category_ids.items():
+            if cat_id == category_id:
+                category_name = name
+                break
+        product = request.form.get("product")
+        condition = request.form.get("condition")
+        age = request.form.get("age")
+        more_details = request.form.get("don_item_deets")
+        animals_yes = request.form.get("animals_yes")
+        email = request.form.get("email")
+        first_name = request.form.get("first-name")
+        surname = request.form.get("surname")
+        address = request.form.get("address")
+        postal_code = request.form.get("postal-code")
+        city = request.form.get("city")
+        newsletter = "newsletter" in request.form
+
+        image_file = request.files.get("image")
+        image_url = None
+
+        if image_file and image_file.filename:
+            filename = secure_filename(image_file.filename)
+            file_ext = os.path.splitext(filename)[1].lower()
+
+            if file_ext not in [".jpg", ".jpeg", ".png"]:
+                return "Invalid file type. Please upload a JPG or PNG image.", 400
+
+            try:
+                upload_result = cloudinary.uploader.upload(
+                    image_file, folder="IT-fi/donations"
+                )
+                image_url = upload_result["url"]
+            except Exception as e:
+                return f"An error occurred while uploading the image: {str(e)}"
+        timestamp = datetime.now()
+        donation_data = {
+            "product": product,
+            "category": category_name,
+            "condition": condition,
+            "age": age,
+            "more_details": more_details,
+            "animals_yes": bool(animals_yes),
+            "email": email,
+            "first_name": first_name,
+            "surname": surname,
+            "address": address,
+            "postal_code": postal_code,
+            "city": city,
+            "newsletter": newsletter,
+            "image_url": image_url,
+            "submitted_time": timestamp,
+        }
+
+        don_coll.insert_one(donation_data)
+
+        return redirect(url_for("thank_you"))
+
+    except Exception as e:
+        print(e)
+        return "An error occurred while processing your donation. Please try again."
+
+
+@app.route("/kiitos")
+def thank_you():
+    don_items, lahjotukset = open_don_data()
+
+    last_donation_cursor = don_items.find().sort([("_id", -1)]).limit(1)
+
+    last_donation = list(last_donation_cursor)
+
+    if last_donation:
+        last_donation = last_donation[0]
+        last_donation["_id"] = str(last_donation["_id"])
+    else:
+        last_donation = None
+
+    return render_template(
+        "kiitos.html",
+        cat_ids=category_ids,
+        show_ad=False,
+        don_items=lahjotukset,
+        last_don=last_donation,
+        page_title="Kiitos!",
+    )
+
+
+@app.route("/kaikkidonot")
+def kaikki_donot():
+    tiedostot = open_data("MainColl")
+    don_coll_ref, don_items = open_don_data()
+
+    last_donation = don_items[-1] if don_items else None
+
+    return render_template(
+        "all_dons.html",
+        last_don=last_donation,
+        don_items=don_items,
+        cat_ids=category_ids,
+        tiedostot=tiedostot,
+        show_ad=False,
+    )
+
+
+@app.route("/accept_donation/<donation_id>", methods=["POST"])
+def accept_donation(donation_id):
+    try:
+        tiedostot = open_data("MainColl")
+        donation_id = ObjectId(donation_id)
+
+        donation = don_coll.find_one({"_id": donation_id})
+        print(f"Received donation_id: {donation_id}")
+
+        if donation:
+            tiedostot.insert_one(donation)
+            don_coll.delete_one({"_id": donation_id})
+
+            flash("Donation accepted successfully!", "success")
+        else:
+            flash("Donation not found.", "error")
+    except Exception as e:
+        print(f"Error accepting donation: {e}")
+        flash("An error occurred while accepting the donation: " + str(e), "error")
+
+    return redirect(url_for("kaikki_donot"))
+
+
+@app.route("/delete_donation/<donation_id>", methods=["POST"])
+def delete_donation(donation_id):
+    try:
+        result = don_coll.delete_one({"_id": ObjectId(donation_id)})
+
+        if result.deleted_count == 1:
+            flash("Donation successfully deleted.", "success")
+        else:
+            flash("Donation not found.", "warning")
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}", "danger")
+
+    return redirect(url_for("kaikki_donot"))
 
 
 @app.route("/tietosuoja")

@@ -52,6 +52,14 @@
     {%include "nav_second.html"%} {% if show_ad is not defined or show_ad ==
     True %} {%include "ad-top.html"%} {% endif %}
     <main>
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %}
+      <div class="alert-container text-center">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %}
       <div class="container-md my-3 p-3 the-main-block">
         <div class="row text-center">{% block content %} {% endblock %}</div>
       </div>

@@ -3,7 +3,12 @@
   <h2 class="text-center">Mitä haluat lahjoittaa?</h2>
   <p class="text-center">Tämä ei sido sinua mihinkään..</p>
   <div class="form-complete row justify-content-center">
-    <form action="" class="col-md-6">
+    <form
+      action="/submit_donation"
+      class="col-md-6"
+      method="POST"
+      enctype="multipart/form-data"
+    >
       <div class="mb-4 mt-5">
         <div class="form-labels-dona">Tuotteen tiedot</div>
       </div>
@@ -12,33 +17,48 @@
       <div class="product-form">
         <div class="form-group mb-3 text-start">
           <label for="product">Tuote</label>
-          <input type="text" id="product" class="form-control mt-2" />
+          <input
+            type="text"
+            name="product"
+            id="product"
+            class="form-control mt-2"
+            required
+          />
         </div>
 
         <div class="form-group mb-3 text-start">
           <label for="category">Tuotekategoria</label>
-          <select id="category" class="form-select mt-2">
+          <select
+            name="category"
+            id="category"
+            class="form-select mt-2"
+            required
+          >
             <option value="" selected disabled></option>
-            <option value="chairs">Tuolit & Nojatuolit</option>
-            <option value="couches">Sohvat</option>
-            <option value="beds">Sängyt</option>
-            <option value="tables">Pöydät</option>
-            <option value="shelves">Hyllyt, tasot ja säilytys</option>
-            <option value="lamps">Valaisimet</option>
-            <option value="rugs">Matot</option>
-            <option value="furnishing">Sisustusesineet</option>
-            <option value="outdoors">Ulkokalusteet</option>
+            {% for cat, cat_ids in cats.items() %}
+            <option value="{{ cat_ids }}">{{ cat }}</option>
+            {% endfor %}
           </select>
         </div>
 
         <div class="form-group mb-3 text-start">
           <label for="image">Kuva tuotteesta</label>
-          <input type="file" id="image" class="form-control mt-2" />
+          <input
+            type="file"
+            name="image"
+            id="image"
+            class="form-control mt-2"
+          />
         </div>
 
         <div class="form-group mb-3 text-start">
           <label for="condition">Tuotteen kunto</label>
-          <select type="" id="condition" class="form-select mt-2">
+          <select
+            name="condition"
+            id="condition"
+            class="form-select mt-2"
+            required
+          >
             <option value="" selected disabled></option>
             <option value="new_unused">Uusi / Käyttämätön</option>
             <option value="great">Erinomainen</option>
@@ -50,8 +70,24 @@
 
         <div class="form-group mb-3 text-start">
           <label for="age">Tuotteen ikä</label>
-          <input type="text" id="age" class="form-control mt-2" />
+          <input
+            type="text"
+            name="age"
+            id="age"
+            class="form-control mt-2"
+            placeholder="esim: 1-3v..."
+            required
+          />
         </div>
+      </div>
+      <div class="form-group text-start mb-3">
+        <label class="form-check-label" for="don_item_deets">Lisätietoja</label>
+        <textarea
+          class="form-control mt-2"
+          type="text"
+          id="don_item_deets"
+          name="don_item_deets"
+        ></textarea>
       </div>
       <div class="form-group mb-4">
         <div class="text-start">
@@ -59,6 +95,7 @@
             <input
               class="form-check-input"
               type="checkbox"
+              name="animals_yes"
               id="animals_yes"
               value="animals_yes"
             />
@@ -81,24 +118,41 @@
             name="email"
             id="email"
             class="form-control mt-2"
+            required
           />
         </div>
 
         <div class="row">
           <div class="col-md-6 mb-3 text-start">
             <label for="first-name">Etunimi</label>
-            <input type="text" id="first-name" class="form-control mt-2" />
+            <input
+              type="text"
+              name="first-name"
+              id="first-name"
+              class="form-control mt-2"
+            />
           </div>
 
           <div class="col-md-6 mb-3 text-start">
             <label for="surname">Sukunimi</label>
-            <input type="text" id="surname" class="form-control mt-2" />
+            <input
+              type="text"
+              name="surname"
+              id="surname"
+              class="form-control mt-2"
+            />
           </div>
         </div>
 
         <div class="form-group mb-3 text-start">
           <label for="address">Katuosoite</label>
-          <input type="text" id="address" class="form-control mt-2" />
+          <input
+            type="text"
+            name="address"
+            id="address"
+            class="form-control mt-2"
+            required
+          />
         </div>
 
         <div class="row">
@@ -106,15 +160,24 @@
             <label for="postal-code">Postinumero</label>
             <input
               type="text"
+              name="postal-code"
               id="postal-code"
               class="form-control mt-2"
               maxlength="5"
+              pattern="\d{5}"
+              required
             />
           </div>
 
           <div class="col-md-6 mb-3 text-start">
             <label for="city">Kaupunki</label>
-            <input type="text" id="city" class="form-control mt-2" />
+            <input
+              type="text"
+              name="city"
+              id="city"
+              class="form-control mt-2"
+              required
+            />
           </div>
         </div>
       </div>
@@ -124,6 +187,7 @@
             <input
               class="form-check-input"
               type="checkbox"
+              name="newsletter"
               id="newsletter"
               value="newsletter"
             />
@@ -137,11 +201,11 @@
         <p class="accept-cookies-font">
           Lähettämällä ilmoituksen hyväksyn ilmaistatavaraa.fi:n
           <span class="ppolicy_text"
-            ><a href="{{url_for('rules')}}">käyttöehdot</a></span
+            ><a href="{{ url_for('rules') }}">käyttöehdot</a></span
           >.
         </p>
       </div>
-      <button class="btn form-submit-btn" type="button">Lähetä</button>
+      <button class="btn form-submit-btn" type="submit">Lähetä</button>
     </form>
   </div>
 </div>

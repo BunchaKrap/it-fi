@@ -1,0 +1,31 @@
+{% extends 'boilerplate.html' %} {% block content %}
+<div class="container-md col-md-6 text-start mt-5">
+  <div class="justify-content-center priv-text-content text-center">
+    <h1 class="mb-5">Kiitos Lahjoituksestasi, {{last_don.first_name}}!</h1>
+
+    <p>
+      Kiitos jättämästäsi ilmoituksesta! Tarkikstamme ilmoituksesi tiedot ja
+      julkaisemme sen mahdollisimman pian. Saat sähköpostitse vahvistuksen kun
+      ilmoituksesi on julkaistu palvelussa. 😊
+    </p>
+
+    <p class="mt-4 mb-0">
+      Huomioithan, että jättämällä ilmoituksen sitoudut noudattamaan palvelun
+      ehtoja. Voimme muokata tai pyytää ilmoituksesi tietoihin korjauksia tai
+      hylätä ilmoituksesi, mikäli se on palvelun sääntöjen vastainen.
+    </p>
+    <div class="don_details">
+      <p><b>Ilmoituksesi tiedot:</b></p>
+      <p><b>Tuotteen nimi:</b> {{last_don.product}}</p>
+      <p><b>Kategoria:</b> {{last_don.category}}</p>
+      {%if image_url%}
+      <img src="{{last_don.image_url}}" alt="" />
+      {%else%}
+      <p><sub>Kuva puutttuu</sub></p>
+      {%endif%}
+      <p><b>Ilmoitusteksti:</b> {{last_don.more_details}}</p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

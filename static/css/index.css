@@ -131,7 +131,7 @@ input.form-control {
 .post_item {
     margin: auto;
     position: relative;
-    border-radius: 8%/5%;
+    border-radius: 12px;
     -webkit-box-shadow: 1px 3px 14px -6px rgba(158, 158, 158, 1);
     -moz-box-shadow: 1px 3px 14px -6px rgba(158, 158, 158, 1);
     box-shadow: 1px 3px 14px -6px rgba(158, 158, 158, .5);
@@ -281,7 +281,7 @@ footer>p {
 } */
 
 /* PHONE SIZE */
-@media screen and (max-width: 540px) {
+@media only screen and (max-width: 768px) {
 
 
 
@@ -300,16 +300,16 @@ footer>p {
 
     }
 
+    .ad-boxs-banner img {
+        width: 80%;
+    }
 
     .ad-boxs-skyscraper-right,
-    .ad-boxs-skyscraper-left,
-    .ad-boxs-banner {
+    .ad-boxs-skyscraper-left {
         display: none;
     }
 
-    .post_item {
-        width: 80%;
-    }
+
 
 
 
@@ -398,6 +398,7 @@ footer>p {
 
 .category_page_tit h2 {
     font-size: .8rem;
+    font-weight: 400;
 }
 
 .fa-solid {
@@ -473,7 +474,7 @@ footer>p {
 }
 
 .ddown-height {
-    height: 250px;
+    max-height: 250px;
     overflow-y: scroll;
 }
 
@@ -484,12 +485,11 @@ footer>p {
 }
 
 .filter-dropdown button {
-    border: 1px solid var(--black);
     color: var(--black);
-    letter-spacing: .3px;
-
-
-
+    letter-spacing: .7px;
+    font-size: .9rem;
+    border: .5px solid var(--black);
+    border-radius: 8px;
 
 }
 
@@ -508,4 +508,57 @@ footer>p {
 
 input.form-control::placeholder {
     opacity: .5;
+}
+
+.cat-locker {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    gap: .5rem;
+}
+
+.cat-locker a>i {
+    color: var(--main-blue);
+    position: absolute;
+    font-size: 1.8rem;
+    top: 20%;
+    left: 5%;
+}
+
+/* .title-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin: 0 0 1rem 0;
+}
+
+.loc-box {
+    position: relative;
+    left: 0px;
+} */
+
+
+.don_item_items,
+.vika_dono {
+    border: .5px solid var(--black);
+    margin: 1rem;
+    padding: .5rem;
+    border-radius: 8px;
+
+}
+
+.error_img img {
+    width: 50%;
+    height: 50%;
+}
+
+.submits {
+    display: flex;
+    gap: 1rem;
+    margin: .6rem;
+    padding: .3rem;
+    justify-content: center;
 }

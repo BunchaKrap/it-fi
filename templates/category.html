@@ -1,9 +1,11 @@
 {% extends 'boilerplate.html' %} {% block content %}
 
 <div class="container-md">
-  <div class="locker row">
-    <a href="">takaisin</a>
-    <h1 class="mb-3">{{ category }}</h1>
+  <div class="cat-locker">
+    <a href="{{url_for('kotisivut')}}"
+      ><i class="fa-solid fa-arrow-left"></i
+    ></a>
+    <h1 class="">{{ category }}</h1>
   </div>
 
   <div class="row">
