@@ -1,0 +1,56 @@
+{% extends 'boilerplate.html' %} {% block content %}
+<div class="container-md col-md-6 text-start mt-5">
+  <div class="justify-content-center priv-text-content text-center">
+    <div class="admin-login">
+      <h1>Rekisteröi uusi käyttäjä!</h1>
+      <div class="form-complete row justify-content-center">
+        <form
+          action="/create_new_user"
+          method="POST"
+          enctype="multipart/form-data"
+          class="col-md-6"
+        >
+          <div class="login-box form-group mb-2">
+            <label class="mb-2" for="login-email">Sähköposti</label>
+            <input
+              class="email form-control"
+              type="email"
+              name="login-email"
+              id="login-email"
+            />
+          </div>
+          <div class="login-box form-group mb-2">
+            <label class="mb-2" for="login-pw">Salasana</label>
+            <input
+              class="password form-control"
+              type="password"
+              name="login-pw"
+              id="login-pw"
+            />
+          </div>
+          <div class="login-box form-group mb-2">
+            <label class="mb-2" for="usr-etunimi">Etunimi</label>
+            <input
+              class="usr-etunimi form-control"
+              type="usr-etunimi"
+              name="usr-etunimi"
+              id="usr-etunimi"
+            />
+            <label class="mb-2" for="usr-sukunimi">Sukunimi</label>
+            <input
+              class="usr-sukunimi form-control"
+              type="usr-sukunimi"
+              name="usr-sukunimi"
+              id="usr-sukunimi"
+            />
+          </div>
+
+          <button type="submit" class="btn form-submit-btn">
+            Rekisteröidy
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

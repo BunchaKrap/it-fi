@@ -562,3 +562,19 @@ input.form-control::placeholder {
     padding: .3rem;
     justify-content: center;
 }
+
+.user-login-ddown {
+    position: absolute;
+    right: 2%;
+
+}
+
+.user-login-ddown i {
+    color: var(--black);
+}
+
+.don_details img {
+    max-width: 20rem;
+    max-height: 20rem;
+    object-fit: cover;
+}

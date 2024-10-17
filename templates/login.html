@@ -1,0 +1,36 @@
+{% extends 'boilerplate.html' %} {% block content %}
+<div class="container-md col-md-6 text-start mt-5">
+  <div class="justify-content-center priv-text-content text-center">
+    <div class="login_all">
+      <h1>Kirjaudu</h1>
+      <form action="/check_login" method="POST" enctype="multipart/form-data">
+        <div class="login-box form-group">
+          <label for="login-name">Sposti</label>
+          <input
+            class="form-control"
+            type="text"
+            name="login-name-usr"
+            id="login-name-usr"
+          />
+        </div>
+        <div class="login-box form-group">
+          <label for="login-pw">Salasana</label>
+          <input
+            class="form-control"
+            type="password"
+            name="login-pw-usr"
+            id="login-pw-usr"
+          />
+        </div>
+        <button class="btn" type="submit">Kirjaudu</button>
+      </form>
+      <div class="">
+        <p>
+          Ei vielä käyttäjää?
+          <span><a href="{{url_for('register')}}">Rekisteröidy</a></span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

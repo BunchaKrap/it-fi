@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask_bcrypt import Bcrypt
 from datetime import datetime
 from pymongo import MongoClient
 from pymongo.mongo_client import MongoClient  # noqa: F811
@@ -20,6 +21,7 @@ uri = "mongodb+srv://vukijee:Y6HSTeyKvjeO77oh@it-fi.jsi9p.mongodb.net/?retryWrit
 app = Flask(__name__)
 curr_yr = datetime.now().year
 client = MongoClient(uri, server_api=ServerApi("1"))
+bcrypt = Bcrypt(app)
 new_db = client["donations"]
 don_coll = new_db["donations"]
 app.secret_key = "madre_mia"
@@ -107,9 +109,6 @@ def find_item_loc(category_name=None):
             continue
 
     return unique_locations
-
-
-# print(open_data("MainColl"))
 
 
 @app.errorhandler(404)
@@ -429,5 +428,118 @@ def affiliates():
     )
 
 
-# if __name__ == "__main__":  # for dev
-#     app.run(debug=True)
+@app.route("/palkrangok")
+def admin_logi():
+    tiedostot = open_data("MainColl")
+    return render_template(
+        "palkrangok.html",
+        show_ad=False,
+        tiedostot=tiedostot,
+        page_title="Admin Login",
+        cat_ids=category_ids,
+    )
+
+
+def get_usr_details():
+    db = client["users"]
+    collection = db["user_data"]
+    return collection
+
+
+@app.route("/dash")
+def show_dash():
+    # user_role = session["user_role"]
+    # user_email = session["user_email"]
+    # if user_email not in session:
+    #     return redirect(url_for("kirjaudu"))
+    user_role = "reg"
+    if user_role == "admin":
+        return render_template(
+            "/admin_dash.html",
+            show_ad=False,
+            page_title="Admin Login",
+            cat_ids=category_ids,
+        )
+    else:
+        return render_template(
+            "/dashboard.html",
+            show_ad=False,
+            page_title="User Login",
+            cat_ids=category_ids,
+        )
+
+
+@app.route("/register")
+def register():
+    return render_template("/uusi_kayt.html")
+
+
+@app.route("/kirjaudu", methods=["POST", "GET"])
+def kirjaudu():
+    return render_template("login.html")
+
+
+@app.route("/create_new_user", methods=["POST"])
+def create_user():
+    user_db = client["users"]
+    user_coll = user_db["user_data"]
+    timestamp = datetime.now()
+    crypted_pw = bcrypt.generate_password_hash(request.form.get("login-pw")).decode(
+        "utf-8"
+    )
+    user_details = {
+        "etunimi": request.form.get("usr-etunimi"),
+        "sukunimi": request.form.get("usr-sukunimi"),
+        "sähköposti": request.form.get("login-email"),
+        "salasana": crypted_pw,
+        "role": "regular",
+        "user_created": timestamp,
+    }
+    try:
+        existing_user = user_coll.find_one(
+            {"sähköposti": user_details["sähköposti"].lower()}
+        )
+
+        if existing_user:
+            flash("Tällä sähköpostilla on jo rekisteröity käyttäjä!", "error")
+            print("Email already in use.")
+            return redirect(url_for("register"))
+
+        user_coll.insert_one(user_details)
+        print(f"Data saved: {user_details}")
+        return redirect(url_for("kirjaudu"))
+
+    except Exception as e:
+        print(f"Exception error: {e}")
+        flash("An error occurred during registration.", "error")
+        return redirect(url_for("register"))
+
+
+@app.route("/check_login", methods=["POST"])
+def check_login():
+    login_email = request.form.get("login-name-usr")
+    login_pw = request.form.get("login-pw-usr")
+    user_collection = get_usr_details()
+
+    try:
+        user = user_collection.find_one({"sähköposti": login_email.lower()})
+
+        if user and bcrypt.check_password_hash(user["salasana"], login_pw):
+            return redirect(url_for("show_dash"))
+        else:
+            flash("Väärä sähköposti tai salasana.", "error")
+            return redirect(url_for("kirjaudu"))
+    except Exception as e:
+        print(f"Another error buddy... {e}")
+        flash("An unexpected error occurred.", "error")
+        return redirect(url_for("kirjaudu"))
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("kirjaudu"))
+
+
+if __name__ == "__main__":  # for dev
+    app.run(debug=True)

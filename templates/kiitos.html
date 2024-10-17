@@ -18,7 +18,7 @@
       <p><b>Ilmoituksesi tiedot:</b></p>
       <p><b>Tuotteen nimi:</b> {{last_don.product}}</p>
       <p><b>Kategoria:</b> {{last_don.category}}</p>
-      {%if image_url%}
+      {%if last_don.image_url%}
       <img src="{{last_don.image_url}}" alt="" />
       {%else%}
       <p><sub>Kuva puutttuu</sub></p>

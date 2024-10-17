@@ -1,0 +1,20 @@
+{% extends 'boilerplate.html' %} {% block content %}
+<div class="container-md col-md-6 text-start mt-5">
+  <div class="justify-content-center priv-text-content text-center">
+    <div class="admin-log">
+      <h1>Kirjaudu</h1>
+      <form action="/dash" method="POST" enctype="multipart/form-data">
+        <div class="login-box form-group">
+          <label for="login-name">Sposti</label>
+          <input class="" type="text" name="login-name" id="login-name" />
+        </div>
+        <div class="login-box form-group">
+          <label for="login-pw">Salasana</label>
+          <input type="password" name="login-pw" id="login-pw" />
+        </div>
+        <button type="submit">Kirjaudu</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

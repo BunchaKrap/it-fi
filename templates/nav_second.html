@@ -24,51 +24,35 @@
             >Etusivu</a
           >
         </li>
-        <!-- <li class="nav-item dropdown mx-3">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            Kategoriat
-          </a>
-          <ul class="dropdown-menu text-start mx-3">
-            {% set ns = namespace(displayed_categories=[]) %} {% for item in
-            all_items %} {% set extra_data = item.get('extra_data', None) %} {%
-            if extra_data is not none %} {% set category =
-            extra_data.get('item_category', None) %} {% if category and category
-            not in ns.displayed_categories %} {% set ns.displayed_categories =
-            ns.displayed_categories + [category] %} {% set category_id =
-            cat_ids.get(category) %}
-            <li>
-              <a
-                class="dropdown-item"
-                href="{{ url_for('categories', id=category_id) }}"
-              >
-                {{ category }}
-              </a>
-            </li>
-            {% endif %} {% endif %} {% endfor %}
-          </ul>
-        </li> -->
 
         <li class="nav-item nav-item-standout mx-3">
           <a class="nav-link" href="{{url_for('donaa')}}">Lahjoita!</a>
         </li>
       </ul>
-      <!-- <form class="d-flex search-form" role="search">
-        <input
-          class="form-control me-2 text-center"
-          type="search"
-          placeholder="pesukone..."
-          aria-label="Search"
-        />
-        <button class="btn" type="submit">
-          <i class="fa-solid fa-magnifying-glass"></i>
+      <div class="dropdown user-login-ddown">
+        <button
+          class="btn"
+          type="button"
+          id="triggerId-usr"
+          data-bs-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <i class="fa-solid fa-user"></i>
         </button>
-      </form> -->
+        <div
+          class="dropdown-menu dropdown-menu-end"
+          aria-labelledby="triggerId-usr"
+        >
+          <!-- if user not logged in -->
+          <a class="dropdown-item" href="{{url_for('kirjaudu')}}">Kirjaudu</a>
+          <!-- if user logged in -->
+          <a class="dropdown-item" href="{{url_for('show_dash')}}">Käyttäjä</a>
+          <a class="dropdown-item" href="{{url_for('logout')}}"
+            >Kirjaudu ulos</a
+          >
+        </div>
+      </div>
     </div>
   </div>
 </nav>
