@@ -22,9 +22,10 @@ app = Flask(__name__)
 curr_yr = datetime.now().year
 client = MongoClient(uri, server_api=ServerApi("1"))
 bcrypt = Bcrypt(app)
+app.secret_key = "madre_mia"
 new_db = client["donations"]
 don_coll = new_db["donations"]
-app.secret_key = "madre_mia"
+
 
 try:
     client.admin.command("ping")
@@ -70,6 +71,23 @@ def open_data(collection_name):
         return []
 
 
+def open_user_data():
+    try:
+        db = client["users"]
+        collection = db["user_data"]
+
+        all_users = list(collection.find({}))
+
+        for item in all_users:
+            item["_id"] = str(item["_id"])
+
+        return all_users
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return []
+
+
 category_ids = {
     "Antiikki ja taide": "006",
     "Auto-, vene- ja moottoripyörätarvikkeet": "010",
@@ -111,9 +129,36 @@ def find_item_loc(category_name=None):
     return unique_locations
 
 
+def is_logged_in():
+    return "logged_in" in session and session["logged_in"]
+
+
+def is_admin():
+    return is_logged_in() and session.get("user_role").lower() == "admin"
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("error.html", cat_ids=category_ids), 404
+
+
+# session["user_id"] = str(user["_id"])
+@app.context_processor
+def inject_user():
+    if "logged_in" in session and session["logged_in"]:
+        return {
+            "user_id": session.get("user_id"),
+            "user_fname": session.get("user_fname", ""),
+            "user_email": session.get("user_email", ""),
+            "user_role": session.get("user_role", "reg"),
+            "logged_in": True,
+        }
+    return {
+        "user_fname": "",
+        "user_email": "",
+        "user_role": "guest",
+        "logged_in": False,
+    }
 
 
 @app.context_processor
@@ -294,12 +339,21 @@ def thank_you():
     don_items, lahjotukset = open_don_data()
 
     last_donation_cursor = don_items.find().sort([("_id", -1)]).limit(1)
-
     last_donation = list(last_donation_cursor)
 
     if last_donation:
         last_donation = last_donation[0]
         last_donation["_id"] = str(last_donation["_id"])
+
+        if is_logged_in():
+            user_email = session.get("user_email")
+            donation_email = last_donation.get("email")
+            if user_email != donation_email:
+                flash("Sorppa kamut!", "error")
+                return redirect(url_for("show_dash"))
+        else:
+            flash("You must be logged in to view this page.", "error")
+            return redirect(url_for("kirjaudu"))
     else:
         last_donation = None
 
@@ -319,15 +373,59 @@ def kaikki_donot():
     don_coll_ref, don_items = open_don_data()
 
     last_donation = don_items[-1] if don_items else None
+    if is_admin():
+        return render_template(
+            "all_dons.html",
+            last_don=last_donation,
+            don_items=don_items,
+            cat_ids=category_ids,
+            tiedostot=tiedostot,
+            show_ad=False,
+        )
+    else:
+        flash("No authorization.", "error")
+        return redirect(request.referrer or url_for("show_dash"))
 
-    return render_template(
-        "all_dons.html",
-        last_don=last_donation,
-        don_items=don_items,
-        cat_ids=category_ids,
-        tiedostot=tiedostot,
-        show_ad=False,
-    )
+
+@app.route("/kaikkayt")
+def all_uzers():
+    tiedostot = open_data("MainColl")
+    all_users = open_user_data()
+    don_coll_ref, don_items = open_don_data()
+
+    all_users.sort(key=lambda x: x["user_created"], reverse=True)
+
+    last_donation = don_items[-1] if don_items else None
+
+    if is_admin():
+        return render_template(
+            "all_uzers.html",
+            all_users=all_users,
+            last_don=last_donation,
+            don_items=don_items,
+            cat_ids=category_ids,
+            tiedostot=tiedostot,
+            show_ad=False,
+        )
+    else:
+        flash("No authorization.", "error")
+        return redirect(request.referrer or url_for("show_dash"))
+
+
+@app.route("/delete_user/<user_id>", methods=["POST"])
+def delete_user(user_id):
+    user_collection = get_usr_details()
+    try:
+        result = user_collection.delete_one({"_id": ObjectId(user_id)})
+
+        if result.deleted_count == 1:
+            flash("User successfully deleted.", "success")
+        else:
+            flash("User not found.", "warning")
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}", "danger")
+
+    return redirect(url_for("all_uzers"))
 
 
 @app.route("/accept_donation/<donation_id>", methods=["POST"])
@@ -448,25 +546,30 @@ def get_usr_details():
 
 @app.route("/dash")
 def show_dash():
-    # user_role = session["user_role"]
-    # user_email = session["user_email"]
-    # if user_email not in session:
-    #     return redirect(url_for("kirjaudu"))
-    user_role = "reg"
-    if user_role == "admin":
-        return render_template(
-            "/admin_dash.html",
-            show_ad=False,
-            page_title="Admin Login",
-            cat_ids=category_ids,
-        )
-    else:
-        return render_template(
-            "/dashboard.html",
-            show_ad=False,
-            page_title="User Login",
-            cat_ids=category_ids,
-        )
+    try:
+        if is_logged_in():
+            user_role = session.get("user_role")
+
+            if user_role == "admin":
+                return render_template(
+                    "/admin_dash.html",
+                    show_ad=False,
+                    page_title="Admin Dashboard",
+                    cat_ids=category_ids,
+                )
+            else:
+                return render_template(
+                    "/dashboard.html",
+                    show_ad=False,
+                    page_title="User Dashboard",
+                    cat_ids=category_ids,
+                )
+        else:
+            return redirect(url_for("kirjaudu"))
+
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return redirect(url_for("kirjaudu"))
 
 
 @app.route("/register")
@@ -506,7 +609,8 @@ def create_user():
             return redirect(url_for("register"))
 
         user_coll.insert_one(user_details)
-        print(f"Data saved: {user_details}")
+        # print(f"Data saved: {user_details}")
+        flash("Käyttäjä onnistuneesti rekisteröity.", "success")
         return redirect(url_for("kirjaudu"))
 
     except Exception as e:
@@ -523,8 +627,12 @@ def check_login():
 
     try:
         user = user_collection.find_one({"sähköposti": login_email.lower()})
-
         if user and bcrypt.check_password_hash(user["salasana"], login_pw):
+            session["logged_in"] = True
+            session["user_id"] = str(user["_id"])
+            session["user_fname"] = user.get("etunimi", "")
+            session["user_email"] = user["sähköposti"]
+            session["user_role"] = user.get("role", "reg")
             return redirect(url_for("show_dash"))
         else:
             flash("Väärä sähköposti tai salasana.", "error")

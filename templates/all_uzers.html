@@ -1,0 +1,54 @@
+{% extends 'boilerplate.html' %} {% block content %}
+
+<div class="container-md">
+  <div class="priv-text-content row">
+    {% if all_users and all_users|length > 0 %}
+    <h4>Viimeisin käyttäjä:</h4>
+    <div class="vika_dono col mb-4">
+      <p>Etunimi: {{ all_users[0].etunimi }}</p>
+      <p>Sukunimi: {{ all_users[0].sukunimi }}</p>
+      <p>Sähköposti: {{ all_users[0]["sähköposti"] }}</p>
+      <p>Role: {{ all_users[0].role }}</p>
+      <p>
+        Rekisteröitynyt: {{ all_users[0].user_created if
+        all_users[0].user_created else 'Ei aikaa' }}
+      </p>
+      <div class="submits">
+        <form
+          action="{{ url_for('delete_user', user_id=all_users[0]._id) }}"
+          method="post"
+        >
+          <button type="submit" class="btn btn-danger">Poista</button>
+        </form>
+      </div>
+    </div>
+    <hr />
+
+    <h4>Kaikki käyttäjät:</h4>
+    {% for item in all_users %}
+    <div class="don_item_items col mb-4">
+      <p>Etunimi: {{ item.etunimi }}</p>
+      <p>Sukunimi: {{ item.sukunimi }}</p>
+      <p>Sähköposti: {{ item["sähköposti"] }}</p>
+      <p>Role: {{ item.role }}</p>
+      <p>
+        Rekisteröitynyt: {{ item.user_created if item.user_created else 'Ei
+        aikaa' }}
+      </p>
+      <div class="submits">
+        <form
+          action="{{ url_for('delete_user', user_id=item['_id']) }}"
+          method="post"
+        >
+          <button type="submit" class="btn btn-danger">Poista</button>
+        </form>
+      </div>
+    </div>
+
+    {% endfor %} {% else %}
+    <p>No registered users...</p>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

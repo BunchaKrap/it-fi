@@ -1,11 +1,27 @@
 {% extends 'boilerplate.html' %} {% block content %}
-<div class="container-md col-md-6 text-start mt-5">
-  <div class="justify-content-center priv-text-content text-center">
-    <div class="dashboard">
-      <h1>username USER</h1>
-      <div class="box">gasdgh</div>
-      <div class="box">h54jh</div>
-      <div class="box">hdsfh45h</div>
+<div class="container-md mt-3">
+  <div class="dashboard">
+    <h1 class="mb-4">Tervetuloa, {{user_fname.title()}}!</h1>
+    <div class="dash_user_info big_box row">
+      <div class="dash_user_cont col-md-3 row">
+        <div class="l_side_dash mt-5 text-start">
+          <ul>
+            <li><a href="#">Omat tiedot</a></li>
+            <li><a href="#">Omat lahjoitukset</a></li>
+            <li><a href="#">Suosikit</a></li>
+            <li><a href="#">Asetukset</a></li>
+            <li><a href="{{url_for('contact')}}">Asiakastuki</a></li>
+            <li class="mt-5"><a href="#">Kirjaudu ulos</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="dash_user_cont col-md-9">
+        <div class="r_side_dash">
+          <div class="tieto_display">
+            <p>{{user_fname}}</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

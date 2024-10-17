@@ -44,13 +44,16 @@
           class="dropdown-menu dropdown-menu-end"
           aria-labelledby="triggerId-usr"
         >
-          <!-- if user not logged in -->
+          {%if not logged_in%}
           <a class="dropdown-item" href="{{url_for('kirjaudu')}}">Kirjaudu</a>
-          <!-- if user logged in -->
-          <a class="dropdown-item" href="{{url_for('show_dash')}}">Käyttäjä</a>
+          {%endif%} {%if logged_in%}
+          <a class="dropdown-item" href="{{url_for('show_dash')}}"
+            >Omat tiedot</a
+          >
           <a class="dropdown-item" href="{{url_for('logout')}}"
             >Kirjaudu ulos</a
           >
+          {%endif%}
         </div>
       </div>
     </div>

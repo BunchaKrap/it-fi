@@ -578,3 +578,37 @@ input.form-control::placeholder {
     max-height: 20rem;
     object-fit: cover;
 }
+
+
+
+.dash_user_info {
+    margin: 0;
+    width: 80vw;
+    min-height: 60vh;
+    background-color: var(--brrap);
+    border-radius: 8px;
+}
+
+
+.dash_user_cont:nth-of-type(1) {
+    border-right: .3px solid var(--black);
+}
+
+.dash_user_info li {
+    list-style: none;
+}
+
+.dash_user_info a {
+    text-decoration: none;
+    color: var(--black);
+}
+
+.dash_user_cont {
+    /* border: 4px solid var(--main-blue); */
+    margin: 0;
+    overflow: hidden;
+}
+
+.l_side_dash {
+    position: relative;
+}
