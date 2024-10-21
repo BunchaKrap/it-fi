@@ -4,7 +4,7 @@
   <div class="priv-text-content row">
     <!-- Display the latest donation -->
     {% if last_don %}
-    <div class="vika_dono col mb-4">
+    <div class="vika_dono col mb-4 dono-form-main">
       <h4>Viimeisin lahjoitus:</h4>
       <p>Tuote: {{ last_don.product }}</p>
       <p>Kategoria: {{ last_don.category }}</p>
@@ -30,6 +30,7 @@
         Ilmoitus jätetty: {{ last_don.submitted_time if last_don.submitted_time
         else 'Ei aikaa' }}
       </p>
+      <p>User IP: {{ last_don.user_ip }}</p>
       <div class="submits">
         <form
           action="{{ url_for('accept_donation', donation_id=last_don._id) }}"
@@ -53,7 +54,7 @@
 
     <!-- Display all donations -->
     {% if don_items and don_items|length > 0 %} {% for item in don_items %}
-    <div class="don_item_items col mb-4">
+    <div class="don_item_items col mb-4 dono-form-main">
       <p>Tuote: {{ item.product }}</p>
       <p>Kategoria: {{ item.category }}</p>
       <p>Kunto: {{ item.condition }}</p>
@@ -70,6 +71,7 @@
         Ilmoitus jätetty: {{ item.submitted_time if item.submitted_time else 'Ei
         aikaa' }}
       </p>
+      <p>User IP: {{ item.user_ip }}</p>
       <p>
         Kuva:
         <img

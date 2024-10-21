@@ -2,7 +2,7 @@
 <div class="container-md col-md-6 text-start mt-5">
   <div class="justify-content-center priv-text-content text-center">
     <div class="admin-login">
-      <h1>Rekisteröi uusi käyttäjä!</h1>
+      <h1 class="mb-4">Rekisteröi uusi käyttäjä!</h1>
       <div class="form-complete row justify-content-center">
         <form
           action="/create_new_user"
@@ -44,8 +44,41 @@
               id="usr-sukunimi"
             />
           </div>
+          <div class="login-box form-group mb-2">
+            <label class="mb-2" for="usr-address">Osoite</label>
+            <input
+              class="usr-address form-control"
+              type="usr-address"
+              name="usr-address"
+              id="usr-address"
+            />
+            <label class="mb-2" for="usr-postal-code">Postinumero</label>
+            <input
+              class="usr-postal-code form-control"
+              type="usr-postal-code"
+              name="usr-postal-code"
+              id="usr-postal-code"
+              maxlength="5"
+            />
+          </div>
+          <div class="login-box form-group mb-2">
+            <label class="mb-2" for="usr-city">Kaupunki</label>
+            <input
+              class="usr-city form-control"
+              type="usr-city"
+              name="usr-city"
+              id="usr-city"
+            />
+            <label class="mb-2" for="usr-region">Maakunta</label>
+            <input
+              class="usr-region form-control"
+              type="usr-region"
+              name="usr-region"
+              id="usr-region"
+            />
+          </div>
 
-          <button type="submit" class="btn form-submit-btn">
+          <button type="submit" class="btn form-submit-btn mt-5">
             Rekisteröidy
           </button>
         </form>

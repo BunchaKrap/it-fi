@@ -1,0 +1,48 @@
+{% extends 'boilerplate.html' %} {% block content %}
+
+<div class="container-md">
+  <div class="priv-text-content row">
+    <div class="don_item_items col mb-4">
+      {% if donations %}
+      <ul class="list-group">
+        {% for donation in donations %}
+        <li class="list-group-item mb-3">
+          <h5>{{ donation.product }}</h5>
+          <p><strong>Kategoria:</strong> {{ donation.category }}</p>
+          <p><strong>Kunto:</strong> {{ donation.condition }}</p>
+          <p><strong>Tuotteen ikä:</strong> {{ donation.age }}</p>
+          <p><strong>Tuotteen tiedot:</strong> {{ donation.more_details }}</p>
+          <p>
+            <strong>Lahjoittajan nimi:</strong> {{ donation.first_name }} {{
+            donation.surname }}
+          </p>
+          <p>
+            <strong>Osoite:</strong> {{ donation.address }}, {{
+            donation.postal_code }}, {{ donation.city }}, {{donation.region}}
+          </p>
+          <p><strong>Sähköposti:</strong> {{ donation.email }}</p>
+          <p>
+            <strong>Ilmoitus jätetty:</strong> {{
+            donation.submitted_time.strftime('%Y-%m-%d %H:%M:%S') }}
+          </p>
+
+          {% if donation.image_url %}
+          <img
+            src="{{ donation.image_url }}"
+            alt="Donation Image"
+            class="img-fluid dono_image"
+          />
+          {% else %}
+          <p><em>No image available.</em></p>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>Et ole vielä tehnyt lahjoituksia.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -68,7 +68,7 @@
         <div class="tarjoukset">Tee löytöjä PILKKAHINTAAN!</div>
       </div>
     </nav>
-    <nav class="navbar justify-content-center">
+    <!-- <nav class="navbar justify-content-center">
       <a class="navbar-brand" href="{{url_for('kotisivut')}}"
         ><img
           id="it_logo"
@@ -76,14 +76,14 @@
           alt="logo_reg"
         />
       </a>
-    </nav>
+    </nav> -->
 
     {%include "nav_second.html"%} {% if show_ad is not defined or show_ad ==
     True %} {%include "ad-top.html"%} {% endif %}
     <main>
       {% with messages = get_flashed_messages(with_categories=true) %} {% if
       messages %}
-      <div class="alert-container text-center">
+      <div id="flash-container" class="alert-container text-center">
         {% for category, message in messages %}
         <div class="alert alert-{{ category }}">{{ message }}</div>
         {% endfor %}
@@ -101,6 +101,17 @@
 </html>
 <!-- Sort items functionality -->
 <script>
+  window.onload = function () {
+    const flashContainer = document.getElementById('flash-container');
+    if (flashContainer) {
+      setTimeout(() => {
+        flashContainer.classList.add('fade-out');
+        setTimeout(() => {
+          flashContainer.style.display = 'none';
+        }, 500);
+      }, 2000);
+    }
+  };
   document.addEventListener('DOMContentLoaded', function () {
     const locationLinks = document.querySelectorAll('.location-filter');
     const items = document.querySelectorAll('.item-card');

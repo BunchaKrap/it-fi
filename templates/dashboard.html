@@ -5,9 +5,36 @@
     <div class="dash_user_info big_box row">
       <div class="dash_user_cont col-md-3 row">
         <div class="l_side_dash mt-5 text-start">
+          <div class="user_prof_pic mb-5">
+            {% if user.profile_image_url %}
+            <img
+              id="profile-image"
+              src="{{ user.profile_image_url }}"
+              alt="User Profile Picture"
+            />
+            {% else %}
+            <a id="add-image-link" href="#">Add an image!</a>
+            {% endif %}
+            <form
+              id="upload-form"
+              action="/upload_image"
+              method="POST"
+              enctype="multipart/form-data"
+              style="display: none"
+            >
+              <input
+                type="file"
+                name="profile-image"
+                id="profile-image-input"
+                accept=".jpg, .jpeg, .png"
+              />
+            </form>
+          </div>
           <ul>
-            <li><a href="#">Omat tiedot</a></li>
-            <li><a href="#">Omat lahjoitukset</a></li>
+            <li><a href="{{url_for('show_dash')}}">Omat tiedot</a></li>
+            <li>
+              <a href="{{url_for('omat_lahjoitukset')}}">Omat lahjoitukset</a>
+            </li>
             <li><a href="#">Suosikit</a></li>
             <li><a href="#">Asetukset</a></li>
             <li><a href="{{url_for('contact')}}">Asiakastuki</a></li>
@@ -19,12 +46,213 @@
       </div>
       <div class="dash_user_cont col-md-9">
         <div class="r_side_dash">
-          <div class="tieto_display">
-            <p>{{user_fname}}</p>
+          {% if show_donations %}
+          <div class="user-donations container-md mt-5">
+            <h3>Your Donations</h3>
+            {% if donations %}
+            <ul class="list-group">
+              {% for donation in donations %}
+              <li class="list-group-item mb-3">
+                <h5>{{ donation.product }}</h5>
+                <p><strong>Category:</strong> {{ donation.category }}</p>
+                <p><strong>Condition:</strong> {{ donation.condition }}</p>
+                <p><strong>Age:</strong> {{ donation.age }}</p>
+                <p>
+                  <strong>More Details:</strong> {{ donation.more_details }}
+                </p>
+
+                {% if donation.image_url %}
+                <img
+                  src="{{ donation.image_url }}"
+                  alt="Donation Image"
+                  class="img-fluid dono_image"
+                />
+                {% else %}
+                <p><em>No image available for this donation.</em></p>
+                {% endif %}
+              </li>
+              {% endfor %}
+            </ul>
+            {% else %}
+            <p>You haven't made any donations yet.</p>
+            {% endif %}
           </div>
+          {% else %}
+
+          <div class="tieto_display container-md">
+            <h2 class="mt-4">{{ user_fname.title() }}</h2>
+
+            <div class="user-details-form text-start">
+              <form
+                action="/update_user_details"
+                method="POST"
+                enctype="multipart/form-data"
+              >
+                <div class="row mb-3">
+                  <div class="col-md-6 offset-md-3 mb-3">
+                    <label for="email" class="form-label">Sähköposti</label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value="{{ user_email }}"
+                      class="form-control"
+                      required
+                      readonly
+                    />
+                  </div>
+                  <div class="col-md-6 offset-md-3 mb-3">
+                    <label for="password" class="form-label">Salasana</label>
+                    <input
+                      type="password"
+                      id="password"
+                      name="password"
+                      class="form-control"
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-6 offset-md-3 mb-3">
+                    <label for="first-name" class="form-label">Etunimi</label>
+                    <input
+                      type="text"
+                      id="first-name"
+                      name="first-name"
+                      value="{{ user_fname.title() }}"
+                      class="form-control"
+                      required
+                      readonly
+                    />
+                  </div>
+                  <div class="col-md-6 offset-md-3 mb-3">
+                    <label for="last-name" class="form-label">Sukunimi</label>
+                    <input
+                      type="text"
+                      id="last-name"
+                      name="last-name"
+                      value="{{ user_lname.title() }}"
+                      class="form-control"
+                      required
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-6 offset-md-3 mb-3">
+                    <label for="address" class="form-label">Osoite</label>
+                    <input
+                      type="text"
+                      id="address_mod"
+                      name="address_mod"
+                      class="form-control"
+                      value="{{ user['address_details']['address'] or '' }}"
+                      readonly
+                    />
+                  </div>
+                  <div class="col-md-6 offset-md-3 mb-3">
+                    <label for="postal-code" class="form-label"
+                      >Postinumero</label
+                    >
+                    <input
+                      type="text"
+                      id="postal-code_mod"
+                      name="postal-code_mod"
+                      class="form-control"
+                      value="{{ user['address_details']['postal-code'] or '' }}"
+                      maxlength="5"
+                      readonly
+                    />
+                  </div>
+                  <div class="col-md-6 offset-md-3 mb-3">
+                    <label for="city" class="form-label">Kaupunki</label>
+                    <input
+                      type="text"
+                      id="city_mod"
+                      name="city_mod"
+                      class="form-control"
+                      value="{{ user['address_details']['city'] or '' }}"
+                      readonly
+                    />
+                  </div>
+                  <div class="col-md-6 offset-md-3 mb-3">
+                    <label for="region_mod" class="form-label">Maakunta</label>
+                    <input
+                      type="text"
+                      id="region_mod"
+                      name="region_mod"
+                      class="form-control"
+                      value="{{ user['address_details']['region'] or '' }}"
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6 offset-md-3 mb-3 text-center">
+                  <button
+                    type="button"
+                    class="btn mt-3 mb-5"
+                    id="edit-button"
+                    onclick="toggleEdit()"
+                  >
+                    Muokkaa tietoja
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          {% endif %}
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  function toggleEdit() {
+    const inputs = document.querySelectorAll('.form-control');
+    const editButton = document.getElementById('edit-button');
+
+    const isReadonly = inputs[0].hasAttribute('readonly');
+
+    if (isReadonly) {
+      inputs.forEach((input) => input.removeAttribute('readonly'));
+      editButton.textContent = 'Tallenna tiedot';
+    } else {
+      inputs.forEach((input) => input.setAttribute('readonly', true));
+      editButton.textContent = 'Muokkaa tietoja';
+      editButton.setAttribute('type', 'submit');
+    }
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    const img = document.getElementById('profile-image');
+    const addImageLink = document.getElementById('add-image-link');
+
+    if (
+      !img.src ||
+      img.src.endsWith('/') ||
+      img.src.endsWith('placeholder.png')
+    ) {
+      addImageLink.style.display = 'block';
+      img.style.display = 'none';
+    } else {
+      addImageLink.style.display = 'none';
+      img.style.display = 'block';
+    }
+  });
+  document
+    .getElementById('add-image-link')
+    .addEventListener('click', function (e) {
+      e.preventDefault();
+      document.getElementById('profile-image-input').click();
+    });
+
+  document
+    .getElementById('profile-image-input')
+    .addEventListener('change', function () {
+      if (this.files && this.files[0]) {
+        document.getElementById('upload-form').submit();
+      }
+    });
+</script>
 {% endblock %}

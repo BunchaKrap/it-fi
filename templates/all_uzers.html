@@ -13,7 +13,7 @@
         Rekisteröitynyt: {{ all_users[0].user_created if
         all_users[0].user_created else 'Ei aikaa' }}
       </p>
-      <p>IP: {{all_users[0].user_ip}}</p>
+      <p>IP: {{all_users[0].user_ip.split()}}</p>
       <div class="submits">
         <form
           action="{{ url_for('delete_user', user_id=all_users[0]._id) }}"
@@ -36,7 +36,7 @@
         Rekisteröitynyt: {{ item.user_created if item.user_created else 'Ei
         aikaa' }}
       </p>
-      <p>IP: {{all_users.user_ip}}</p>
+      <p>IP: {{item.user_ip}}</p>
       <div class="submits">
         <form
           action="{{ url_for('delete_user', user_id=item['_id']) }}"

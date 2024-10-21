@@ -163,6 +163,12 @@ def inject_user():
 
 
 @app.context_processor
+def inject_full_data():
+    all_users_reg = open_user_data()
+    return dict(all_users_reg=all_users_reg)
+
+
+@app.context_processor
 def inject_all_items():
     tiedostot = open_data("MainColl")
     return dict(all_items=tiedostot)
@@ -269,6 +275,64 @@ def donaa():
     )
 
 
+def find_user_deez():
+    user_id = session.get("user_id")
+    user_role = session.get("user_role")
+
+    user_db = client["users"]
+    user_coll = user_db["user_data"]
+    user = user_coll.find_one({"_id": ObjectId(user_id)})
+    return user_id, user_role, user_coll, user
+
+
+@app.route("/lahjoitukset")
+def omat_lahjoitukset():
+    user_id = session.get("user_id")
+    user_role = session.get("user_role")
+
+    user_db = client["users"]
+    user_coll = user_db["user_data"]
+    user = user_coll.find_one({"_id": ObjectId(user_id)})
+    if is_logged_in():
+        user_email = session.get("user_email")
+        if not user_email:
+            flash("Käyttäjä ei ole kirjautunut sisään.", "error")
+            return redirect(url_for("kirjaudu"))
+
+        donation_coll = client["donations"]["donations"]
+
+        try:
+            user_donations = list(donation_coll.find({"email": user_email}))
+
+            if not user_donations:
+                flash("Ei lahjoituksia löytynyt.", "warning")
+            if is_admin():
+                return render_template(
+                    "admin_dash.html",
+                    page_title="Omat Lahjoitukset",
+                    donations=user_donations,
+                    show_donations=True,
+                    user=user,
+                    show_ad=False,
+                )
+            else:
+                return render_template(
+                    "dashboard.html",
+                    page_title="Omat Lahjoitukset",
+                    donations=user_donations,
+                    show_donations=True,
+                    user=user,
+                    show_ad=False,
+                )
+
+        except Exception as e:
+            print(f"Error fetching donations: {e}")
+            flash("Virhe lahjoitusten hakemisessa.", "error")
+            return redirect(url_for("show_dash"))
+    else:
+        return redirect(url_for("kirjaudu"))
+
+
 @app.route("/submit_donation", methods=["POST"])
 def submit_donation():
     try:
@@ -341,6 +405,44 @@ def submit_donation():
     except Exception as e:
         print(e)
         return "An error occurred while processing your donation. Please try again."
+
+
+@app.route("/upload_image", methods=["POST"])
+def upload_img():
+    user_db = client["users"]
+    user_coll = user_db["user_data"]
+    image_file = request.files.get("profile-image")
+    image_url = None
+
+    if image_file and image_file.filename:
+        filename = secure_filename(image_file.filename)
+        file_ext = os.path.splitext(filename)[1].lower()
+
+        if file_ext not in [".jpg", ".jpeg", ".png"]:
+            flash("Invalid file type. Please upload a JPG or PNG image.", "error")
+            return redirect(url_for("show_dash"))
+
+        try:
+            upload_result = cloudinary.uploader.upload(
+                image_file, folder="IT-fi/user_profiles"
+            )
+            image_url = upload_result["url"]
+
+            user_id = session.get("user_id")
+            if user_id:
+                user_coll.update_one(
+                    {"_id": ObjectId(user_id)},
+                    {"$set": {"profile_image_url": image_url}},
+                )
+                flash("Profile picture updated successfully.", "success")
+            else:
+                flash("User not found.", "error")
+
+        except Exception as e:
+            flash(f"An error occurred while uploading the image: {str(e)}", "error")
+            return redirect(url_for("show_dash"))
+
+    return redirect(url_for("show_dash"))
 
 
 @app.route("/kiitos")
@@ -557,7 +659,16 @@ def get_usr_details():
 def show_dash():
     try:
         if is_logged_in():
+            user_id = session.get("user_id")
             user_role = session.get("user_role")
+
+            user_db = client["users"]
+            user_coll = user_db["user_data"]
+            user = user_coll.find_one({"_id": ObjectId(user_id)})
+
+            if not user:
+                flash("User not found.", "error")
+                return redirect(url_for("kirjaudu"))
 
             if user_role == "admin":
                 return render_template(
@@ -565,6 +676,7 @@ def show_dash():
                     show_ad=False,
                     page_title="Admin Dashboard",
                     cat_ids=category_ids,
+                    user=user,
                 )
             else:
                 return render_template(
@@ -572,6 +684,7 @@ def show_dash():
                     show_ad=False,
                     page_title="User Dashboard",
                     cat_ids=category_ids,
+                    user=user,
                 )
         else:
             return redirect(url_for("kirjaudu"))
@@ -588,7 +701,7 @@ def register():
 
 @app.route("/kirjaudu", methods=["POST", "GET"])
 def kirjaudu():
-    return render_template("login.html")
+    return render_template("login.html", page_title="Kirjaudu")
 
 
 @app.route("/create_new_user", methods=["POST"])
@@ -597,6 +710,8 @@ def create_user():
     user_coll = user_db["user_data"]
     timestamp = datetime.now()
     user_ip = request.headers.get("X-Forwarded-For", request.remote_addr)
+    if user_ip:
+        user_ip = user_ip.split(",")[0]
     crypted_pw = bcrypt.generate_password_hash(request.form.get("login-pw")).decode(
         "utf-8"
     )
@@ -608,6 +723,12 @@ def create_user():
         "role": "regular",
         "user_created": timestamp,
         "user_ip": user_ip,
+        "address_details": {
+            "address": request.form.get("usr-address"),
+            "postal-code": request.form.get("usr-postal-code"),
+            "city": request.form.get("usr-city"),
+            "region": request.form.get("usr-region"),
+        },
     }
     try:
         existing_user = user_coll.find_one(
@@ -620,7 +741,6 @@ def create_user():
             return redirect(url_for("register"))
 
         user_coll.insert_one(user_details)
-        # print(f"Data saved: {user_details}")
         flash("Käyttäjä onnistuneesti rekisteröity.", "success")
         return redirect(url_for("kirjaudu"))
 
@@ -628,6 +748,85 @@ def create_user():
         print(f"Exception error: {e}")
         flash("An error occurred during registration.", "error")
         return redirect(url_for("register"))
+
+
+@app.route("/update_user_details", methods=["POST"])
+def update_user_details():
+    user_db = client["users"]
+    user_coll = user_db["user_data"]
+    user_id = session.get("user_id")
+
+    # Retrieve user details from the database
+    user = user_coll.find_one({"_id": ObjectId(user_id)})
+    db_usr_id = user["_id"]
+
+    print(f"session: {user_id}, db: {db_usr_id}")
+    if not user:
+        flash("Käyttäjää ei löytynyt.", "error")
+        return redirect(url_for("show_dash"))
+
+    new_names = {
+        "etunimi": request.form.get("first-name", "").strip(),
+        "sukunimi": request.form.get("last-name", "").strip(),
+    }
+
+    existing_address_details = user["address_details"]
+    print(f"existing: {existing_address_details}")
+
+    new_address_details = {
+        "address": request.form.get("address_mod", "").strip(),
+        "postal-code": request.form.get("postal-code_mod", "").strip(),
+        "city": request.form.get("city_mod", "").strip(),
+        "region": request.form.get("region_mod", "").strip(),
+    }
+
+    print(new_address_details)
+
+    updated_address_details = {
+        "address": new_address_details["address"]
+        if new_address_details["address"]
+        else existing_address_details.get("address"),
+        "postal-code": new_address_details["postal-code"]
+        if new_address_details["postal-code"]
+        else existing_address_details.get("postal-code"),
+        "city": new_address_details["city"]
+        if new_address_details["city"]
+        else existing_address_details.get("city"),
+        "region": new_address_details["region"]
+        if new_address_details["region"]
+        else existing_address_details.get("region"),
+    }
+    print(new_names)
+    update_data = {
+        **new_names,
+        "address_details": updated_address_details,
+    }
+
+    print(f"CHECKING updated address details: {updated_address_details}")
+
+    if all(value is None for value in updated_address_details.values()):
+        flash("Ei päivitettäviä tietoja.", "warning")
+        return redirect(url_for("show_dash"))
+
+    try:
+        result = user_coll.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$set": update_data},
+        )
+
+        if result.modified_count > 0:
+            flash("Käyttäjätiedot päivitettiin onnistuneesti.", "success")
+        else:
+            flash("Ei muutoksia havaittu.", "warning")
+
+    except Exception as e:
+        print(f"Exception error: {e}")
+        flash("Virhe käyttäjätietojen päivittämisessä.", "error")
+
+    if session.get("logged_in"):
+        return redirect(url_for("show_dash"))
+    else:
+        return redirect(url_for("kirjaudu"))
 
 
 @app.route("/check_login", methods=["POST"])

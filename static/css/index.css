@@ -8,6 +8,7 @@ html {
     --white: #fff;
     --black: #332a26;
     --brrap: #e8dbd3;
+    --gradient: linear-gradient(to right top, #ecce5d, #f5cd75, #f9ce8c, #f9d0a2, #f5d4b8, #f3ceb2, #f1c7ac, #efc1a6, #f2ad86, #f49868, #f5814b, #f4682f);
     font-family: "SUSE", sans-serif;
     font-optical-sizing: auto;
     font-style: normal;
@@ -20,6 +21,8 @@ body {
     width: 100%;
     overflow-x: hidden;
     letter-spacing: .3px;
+    background-image: var(--gradient);
+
 }
 
 .the-main-block {
@@ -28,11 +31,11 @@ body {
 
 nav {
     margin: 0;
-    background-color: var(--white);
+    background: none;
 }
 
 nav:nth-child(1) {
-    background: var(--brrap);
+    background: none;
     color: var(--black);
     padding-block: .4rem;
     font-size: .8rem;
@@ -41,17 +44,17 @@ nav:nth-child(1) {
 }
 
 nav:nth-child(2) {
-    margin: 0;
-    padding: 0;
-    height: 40px;
-    border-bottom: 0.2px solid var(--brrap);
+    margin-block: .5rem;
+    padding: .5rem;
+    min-height: 40px;
+    border-block: 0.2px solid var(--black);
 
 }
 
 .new-navver a {
-    text-transform: uppercase;
-    font-size: 1.02rem;
-    letter-spacing: 2.35px;
+    /* text-transform: uppercase; */
+    font-size: .92rem;
+    letter-spacing: 1.35px;
     font-weight: 400;
 }
 
@@ -63,8 +66,8 @@ input.form-control {
 }
 
 .new-navver {
-    background: var(--brrap);
-    border-bottom: 0.2px solid var(--brrap);
+    background: none;
+    border-bottom: 0.2px solid var(--black);
 
     & a {
         color: var(--black);
@@ -82,6 +85,19 @@ input.form-control {
 
 .nav-item-standout {
     font-weight: 600;
+}
+
+
+
+#flash-container {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: opacity 0.5s ease-in-out;
+}
+
+#flash-container.fade-out {
+    opacity: 0;
 }
 
 
@@ -292,7 +308,7 @@ footer>p {
     }
 
     nav:nth-child(1) {
-        background: var(--brrap);
+
         color: var(--black);
         padding-block: .4rem;
         font-size: .8rem;
@@ -402,20 +418,21 @@ footer>p {
 }
 
 .fa-solid {
-    color: var(--main-blue);
+    color: var(--gradient);
 }
 
 
 
 .contact_us_box {
-    background: linear-gradient(9deg, rgba(51, 42, 38, 1) 4%, rgba(244, 104, 47, 1) 37%, rgba(101, 120, 149, 1) 75%);
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    /* background: linear-gradient(9deg, rgba(51, 42, 38, 1) 4%, rgba(244, 104, 47, 1) 37%, rgba(101, 120, 149, 1) 75%);
+    background-clip: text; */
+    /* -webkit-text-fill-color: transparent; */
     border-radius: 6px;
     /* border: 1px solid var(--black); */
     -webkit-box-shadow: 0px 0px 18px 1px rgba(0, 0, 0, 0.37);
     -moz-box-shadow: 0px 0px 18px 1px rgba(0, 0, 0, 0.37);
     box-shadow: 0px 0px 18px 1px rgba(0, 0, 0, 0.37);
+    overflow: hidden;
 
 }
 
@@ -453,7 +470,7 @@ footer>p {
     margin: 0;
     text-decoration: none;
     color: var(--black);
-    font-weight: 500;
+    font-weight: 400;
 
 }
 
@@ -486,7 +503,7 @@ footer>p {
 
 .filter-dropdown button {
     color: var(--black);
-    letter-spacing: .7px;
+    letter-spacing: .2px;
     font-size: .9rem;
     border: .5px solid var(--black);
     border-radius: 8px;
@@ -543,7 +560,7 @@ input.form-control::placeholder {
 
 .don_item_items,
 .vika_dono {
-    border: .5px solid var(--black);
+    border: .2px solid var(--main-blue);
     margin: 1rem;
     padding: .5rem;
     border-radius: 8px;
@@ -585,14 +602,17 @@ input.form-control::placeholder {
 .dash_user_info {
     margin: 0;
     width: 80vw;
-    min-height: 60vh;
-    background-color: var(--brrap);
+    height: 60vh;
+    background: var(--white);
     border-radius: 8px;
+    -webkit-box-shadow: 0px 0px 19px -4px rgba(0, 0, 0, 0.38);
+    -moz-box-shadow: 0px 0px 19px -4px rgba(0, 0, 0, 0.38);
+    box-shadow: 0px 0px 19px -4px rgba(0, 0, 0, 0.38);
 }
 
 
 .dash_user_cont:nth-of-type(1) {
-    border-right: .3px solid var(--black);
+    border-right: .02px solid var(--black);
 }
 
 .dash_user_info li {
@@ -614,19 +634,57 @@ input.form-control::placeholder {
     position: relative;
 }
 
-/* .r_side_dash {
-    position: relative;
-    overflow-y: scroll;
-    max-height: 100%;
-} */
+.user_prof_pic {
+    text-align: center;
+}
 
-/* .user-details-form input {
-    border-radius: 8px;
-    border: none;
-    padding: .2rem;
-    margin-block: .2rem;
-} */
+#profile-image {
+    max-width: 150px;
+    max-height: 150px;
+    border-radius: 50px;
+    object-fit: cover;
+}
 
-/* .user-details-form p {
-    margin: 0;
-} */
+#add-image-link {
+    margin-top: 10px;
+    color: blue;
+    text-decoration: underline;
+}
+
+.user-details-form {
+    max-height: 50vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.tieto_display h2 {
+    border-bottom: .3px dotted var(--black);
+    padding: .5rem;
+    margin-bottom: 1rem;
+}
+
+
+
+#edit-button {
+    border: .2px solid var(--black);
+    padding: 1rem;
+
+    &:hover {
+        background: var(--black);
+        color: var(--brrap);
+        opacity: .8;
+    }
+}
+
+.dono_image {
+    max-height: 250px;
+    max-width: 250px;
+    object-fit: cover;
+}
+
+.dono-form-main {
+    border-radius: 4px;
+    -webkit-box-shadow: 0px 0px 51px -8px rgba(129, 129, 129, 0.22);
+    -moz-box-shadow: 0px 0px 51px -8px rgba(129, 129, 129, 0.22);
+    box-shadow: 0px 0px 51px -8px rgba(129, 129, 129, 0.22);
+}
