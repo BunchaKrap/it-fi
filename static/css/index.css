@@ -581,6 +581,7 @@ input.form-control::placeholder {
 
 
 
+
 .dash_user_info {
     margin: 0;
     width: 80vw;
@@ -612,3 +613,20 @@ input.form-control::placeholder {
 .l_side_dash {
     position: relative;
 }
+
+/* .r_side_dash {
+    position: relative;
+    overflow-y: scroll;
+    max-height: 100%;
+} */
+
+/* .user-details-form input {
+    border-radius: 8px;
+    border: none;
+    padding: .2rem;
+    margin-block: .2rem;
+} */
+
+/* .user-details-form p {
+    margin: 0;
+} */

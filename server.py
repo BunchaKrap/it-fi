@@ -149,6 +149,7 @@ def inject_user():
         return {
             "user_id": session.get("user_id"),
             "user_fname": session.get("user_fname", ""),
+            "user_lname": session.get("user_lname", ""),
             "user_email": session.get("user_email", ""),
             "user_role": session.get("user_role", "reg"),
             "logged_in": True,
@@ -255,6 +256,7 @@ def about():
 @app.route("/lahjoita")
 def donaa():
     tiedostot = open_data("MainColl")
+    mapbox_token = os.getenv("MAPBOX_TOKEN")
     return render_template(
         "donaaaa.html",
         cats=category_ids,
@@ -263,6 +265,7 @@ def donaa():
         tiedostot=tiedostot,
         page_title="Lahjoita",
         cat_ids=category_ids,
+        MAPBOX_TOKEN=mapbox_token,
     )
 
 
@@ -270,6 +273,7 @@ def donaa():
 def submit_donation():
     try:
         category_id = request.form.get("category")
+        user_ip = request.headers.get("X-Forwarded-For", request.remote_addr)
 
         category_name = None
         for name, cat_id in category_ids.items():
@@ -287,6 +291,8 @@ def submit_donation():
         address = request.form.get("address")
         postal_code = request.form.get("postal-code")
         city = request.form.get("city")
+        area = request.form.get("area")
+        region = request.form.get("region")
         newsletter = "newsletter" in request.form
 
         image_file = request.files.get("image")
@@ -320,9 +326,12 @@ def submit_donation():
             "address": address,
             "postal_code": postal_code,
             "city": city,
+            "area": area,
+            "region": region,
             "newsletter": newsletter,
             "image_url": image_url,
             "submitted_time": timestamp,
+            "user_ip": user_ip,
         }
 
         don_coll.insert_one(donation_data)
@@ -587,6 +596,7 @@ def create_user():
     user_db = client["users"]
     user_coll = user_db["user_data"]
     timestamp = datetime.now()
+    user_ip = request.headers.get("X-Forwarded-For", request.remote_addr)
     crypted_pw = bcrypt.generate_password_hash(request.form.get("login-pw")).decode(
         "utf-8"
     )
@@ -597,6 +607,7 @@ def create_user():
         "salasana": crypted_pw,
         "role": "regular",
         "user_created": timestamp,
+        "user_ip": user_ip,
     }
     try:
         existing_user = user_coll.find_one(
@@ -631,6 +642,7 @@ def check_login():
             session["logged_in"] = True
             session["user_id"] = str(user["_id"])
             session["user_fname"] = user.get("etunimi", "")
+            session["user_lname"] = user.get("sukunimi", "")
             session["user_email"] = user["sähköposti"]
             session["user_role"] = user.get("role", "reg")
             return redirect(url_for("show_dash"))
@@ -649,5 +661,5 @@ def logout():
     return redirect(url_for("kirjaudu"))
 
 
-if __name__ == "__main__":  # for dev
-    app.run(debug=True)
+# if __name__ == "__main__":  # for dev
+#     app.run(debug=True)

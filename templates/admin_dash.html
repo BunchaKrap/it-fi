@@ -1,28 +1,116 @@
 {% extends 'boilerplate.html' %} {% block content %}
 <div class="container-md mt-3">
   <div class="dashboard">
-    <h1 class="mb-4">Tervetuloa, {{user_fname.title()}}!</h1>
     <div class="dash_user_info big_box row">
       <div class="dash_user_cont col-md-3 row">
         <div class="l_side_dash mt-5 text-start">
-          <ul>
-            <li><a href="#">Omat tiedot</a></li>
-            <li><a href="#">Omat lahjoitukset</a></li>
-            <li><a href="{{url_for('all_uzers')}}">Kaikki käyttäjät</a></li>
+          <ul class="list-unstyled">
+            <li><a href="#" class="nav-link">Omat tiedot</a></li>
+            <li><a href="#" class="nav-link">Omat lahjoitukset</a></li>
             <li>
-              <a href="{{url_for('kaikki_donot')}}">Kaikki lahjoitukset</a>
+              <a href="{{ url_for('all_uzers') }}" class="nav-link"
+                >Kaikki käyttäjät</a
+              >
             </li>
-            <li><a href="#">Suosikit</a></li>
-            <li><a href="#">Asetukset</a></li>
-            <li><a href="{{url_for('contact')}}">Asiakastuki</a></li>
-            <li class="mt-5"><a href="#">Kirjaudu ulos</a></li>
+            <li>
+              <a href="{{ url_for('kaikki_donot') }}" class="nav-link"
+                >Kaikki lahjoitukset</a
+              >
+            </li>
+            <li><a href="#" class="nav-link">Suosikit</a></li>
+            <li><a href="#" class="nav-link">Asetukset</a></li>
+            <li>
+              <a href="{{ url_for('contact') }}" class="nav-link"
+                >Asiakastuki</a
+              >
+            </li>
+            <li class="mt-5">
+              <a href="{{ url_for('logout') }}" class="nav-link text-danger"
+                >Kirjaudu ulos</a
+              >
+            </li>
           </ul>
         </div>
       </div>
       <div class="dash_user_cont col-md-9">
         <div class="r_side_dash">
-          <div class="tieto_display">
-            <p>{{user_fname}}</p>
+          <div class="tieto_display container-md">
+            <h2 class="mt-4">{{ user_fname.title() }}</h2>
+            <hr />
+            <div class="user-details-form">
+              <form
+                action="/update_user_details"
+                method="POST"
+                enctype="multipart/form-data"
+              >
+                <div class="row mb-3">
+                  <div class="col-md-6 offset-md-3">
+                    <label for="email" class="form-label">Sähköposti</label>
+                    <input
+                      type="email"
+                      id="email"
+                      value="{{ user_email }}"
+                      class="form-control"
+                      disabled
+                    />
+                  </div>
+                  <div class="col-md-6 offset-md-3">
+                    <label for="password" class="form-label">Salasana</label>
+                    <input
+                      type="password"
+                      id="password"
+                      class="form-control"
+                      disabled
+                    />
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-6 offset-md-3">
+                    <label for="first-name" class="form-label">Etunimi</label>
+                    <input
+                      type="text"
+                      id="first-name"
+                      value="{{ user_fname.title() }}"
+                      class="form-control"
+                      disabled
+                    />
+                  </div>
+                  <div class="col-md-6 offset-md-3">
+                    <label for="last-name" class="form-label">Sukunimi</label>
+                    <input
+                      type="text"
+                      id="last-name"
+                      value="{{ user_lname.title() }}"
+                      class="form-control"
+                      disabled
+                    />
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-6 offset-md-3">
+                    <label for="address" class="form-label">Osoite</label>
+                    <input type="text" id="address" class="form-control" />
+                  </div>
+                  <div class="col-md-6 offset-md-3">
+                    <label for="postal-code" class="form-label"
+                      >Postinumero</label
+                    >
+                    <input type="text" id="postal-code" class="form-control" />
+                  </div>
+                  <div class="col-md-6 offset-md-3">
+                    <label for="city" class="form-label">Kaupunki</label>
+                    <input type="text" id="city" class="form-control" />
+                  </div>
+                  <div class="col-md-6 offset-md-3">
+                    <label for="region" class="form-label">Maakunta</label>
+                    <input type="text" id="region" class="form-control" />
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-success mt-3 mb-5">
+                  Tallenna tiedot
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </div>

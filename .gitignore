@@ -1,0 +1,10 @@
+# Python
+*.pyc
+__pycache__/
+*.pyo
+
+# Environment variables
+.env
+
+# Others
+*.db

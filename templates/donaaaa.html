@@ -143,20 +143,23 @@
             />
           </div>
         </div>
-
+        <!-- <div class="form-group mb-3 text-start">
+          <div id="geocoder" class="geocoder mt-2"></div>
+        </div> -->
         <div class="form-group mb-3 text-start">
           <label for="address">Katuosoite</label>
+          <div id="geocoder" class="geocoder mt-3"></div>
           <input
             type="text"
             name="address"
             id="address"
-            class="form-control mt-2"
+            class="form-control mt-3"
             required
           />
         </div>
 
         <div class="row">
-          <div class="col-md-6 mb-3 text-start">
+          <div class="col-md-2 mb-3 text-start">
             <label for="postal-code">Postinumero</label>
             <input
               type="text"
@@ -169,7 +172,7 @@
             />
           </div>
 
-          <div class="col-md-6 mb-3 text-start">
+          <div class="col-md-5 mb-3 text-start">
             <label for="city">Kaupunki</label>
             <input
               type="text"
@@ -179,6 +182,19 @@
               required
             />
           </div>
+
+          <div class="col-md-5 mb-3 text-start">
+            <label for="city">Maakunta</label>
+            <input
+              type="text"
+              name="region"
+              id="region"
+              class="form-control mt-2"
+              required
+            />
+          </div>
+          <input type="hidden" id="latitude" name="latitude" display="hidden" />
+          <input type="hidden" id="longitude" name="longitude" />
         </div>
       </div>
       <div class="form-group mb-4">
@@ -210,4 +226,92 @@
   </div>
 </div>
 
+<script>
+  mapboxgl.accessToken = '{{ MAPBOX_TOKEN }}';
+
+  function initializeGeocoder(lat, lng) {
+    return new MapboxGeocoder({
+      accessToken: mapboxgl.accessToken,
+      types: 'address,postcode,place',
+      placeholder: 'Hae osoitetta',
+      country: 'FI',
+      proximity: { longitude: lng, latitude: lat },
+      mapboxgl: mapboxgl,
+    });
+  }
+
+  function handleGeolocationSuccess(position) {
+    let userLatitude = position.coords.latitude;
+    let userLongitude = position.coords.longitude;
+
+    let geocoder = initializeGeocoder(userLatitude, userLongitude);
+    document.getElementById('geocoder').appendChild(geocoder.onAdd());
+
+    geocoder.on('result', function (e) {
+      let streetName = e.result.text || '';
+      let houseNumber = e.result.address || '';
+      let fullAddress = streetName
+        ? streetName + ' ' + houseNumber
+        : houseNumber;
+      let postalCode =
+        e.result.context.find((c) => c.id.includes('postcode'))?.text || '';
+      let city =
+        e.result.context.find((c) => c.id.includes('place'))?.text || '';
+      let region =
+        e.result.context.find((c) => c.id.includes('region'))?.text || '';
+      let lat = e.result.geometry.coordinates[1];
+      let lng = e.result.geometry.coordinates[0];
+
+      document.getElementById('address').value = fullAddress;
+      document.getElementById('postal-code').value = postalCode;
+      document.getElementById('city').value = city;
+      document.getElementById('region').value = region;
+      document.getElementById('latitude').value = lat;
+      document.getElementById('longitude').value = lng;
+    });
+  }
+
+  function handleGeolocationError() {
+    console.warn(
+      'Geolocation not available, using default location (Helsinki).'
+    );
+
+    let helsinkiLat = 60.1699;
+    let helsinkiLng = 24.9384;
+
+    let geocoder = initializeGeocoder(helsinkiLat, helsinkiLng);
+    document.getElementById('geocoder').appendChild(geocoder.onAdd());
+
+    geocoder.on('result', function (e) {
+      let address = e.result.place_name || '';
+      let postalCode =
+        e.result.context.find((c) => c.id.includes('postcode'))?.text || '';
+      let city =
+        e.result.context.find((c) => c.id.includes('place'))?.text || '';
+      let area =
+        e.result.context.find((c) => c.id.includes('district'))?.text || '';
+      let region =
+        e.result.context.find((c) => c.id.includes('region'))?.text || '';
+      let lat = e.result.geometry.coordinates[1];
+      let lng = e.result.geometry.coordinates[0];
+
+      document.getElementById('address').value = address;
+      document.getElementById('postal-code').value = postalCode;
+      document.getElementById('city').value = city;
+      document.getElementById('area').value = area;
+      document.getElementById('region').value = region;
+      document.getElementById('latitude').value = lat;
+      document.getElementById('longitude').value = lng;
+    });
+  }
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      handleGeolocationSuccess,
+      handleGeolocationError
+    );
+  } else {
+    handleGeolocationError();
+  }
+</script>
 {% endblock %}
